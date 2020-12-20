@@ -16,7 +16,7 @@ CREATE TABLE Users(
 CREATE TABLE UserMobileNumber(
 	mobileNumber VARCHAR(64),
 	id INT FOREIGN KEY REFERENCES Users(id),
-	PRIMARY KEY(phoneNum,id)
+	PRIMARY KEY(mobileNumber,id)
 );
 
 CREATE TABLE Instructor(
@@ -77,7 +77,7 @@ CREATE TABLE Promocode(
 
 CREATE TABLE StudentHasPromocode(
 	sid INT FOREIGN KEY REFERENCES Student(id),
-	code INT FOREIGN KEY REFERENCES Promocode(code),
+	code VARCHAR(16) FOREIGN KEY REFERENCES Promocode(code),
 	PRIMARY KEY(sid,code)
 );
 
@@ -105,10 +105,11 @@ CREATE TABLE StudentTakeCourse(
 
 CREATE TABLE StudentTakeAssignment(
 	sid INT FOREIGN KEY REFERENCES Student(id),
-	cid INT FOREIGN KEY REFERENCES Course(id),
-	assignmentNumber INT FOREIGN KEY REFERENCES Assignment(number),
-	assignmentType INT FOREIGN KEY REFERENCES Assignment(type),
-	PRIMARY KEY(sid,cid,assignmentNumber,assignmentType)
+	assignmentNumber INT,
+	cid INT,
+	assignmentType INT,
+	FOREIGN KEY (cid, assignmentNumber, assignmentType) REFERENCES Assignment(cid, number,type),
+	PRIMARY KEY(sid,assignmentNumber,cid,assignmentType)
 );
 
 CREATE TABLE StudentRateInstructor(
@@ -123,6 +124,18 @@ CREATE TABLE StudentCertifyCourse(
 	cid INT FOREIGN KEY REFERENCES Course(id),
 	issueDate DATE,
 	PRIMARY KEY(sid,cid)
+);
+
+CREATE TABLE CoursePrerequisiteCours(
+	prerequisteId INT FOREIGN KEY REFERENCES Course(id),
+	cid INT FOREIGN KEY REFERENCES Course(id),
+	PRIMARY KEY(prerequisteId,cid)
+);
+
+CREATE TABLE InstructorTeachCourse(
+	instId INT FOREIGN KEY REFERENCES Instructor(id),
+	cid INT FOREIGN KEY REFERENCES Course(id),
+	PRIMARY KEY(instId,cid)
 );
 
 
