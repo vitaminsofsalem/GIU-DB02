@@ -13,39 +13,41 @@ CREATE TABLE Users(
 
 
 CREATE TABLE UserMobileNumber(
-	phoneNum VARCHAR(64),
-	userID FOREIGN KEY REFERENCES ADMIN(id),
-	PRIMARY KEY(phoneNum,userID)
+	mobileNumber VARCHAR(64),
+	id INT FOREIGN KEY REFERENCES Users(id),
+	PRIMARY KEY(phoneNum,id)
 );
 
 CREATE TABLE Instructor(
-	id INT FOREIGN KEY REFERENCES USERS(id),
+	id INT PRIMARY KEY FOREIGN KEY REFERENCES Users(id),
 	rating TINYINT
 );
 
 
 CREATE TABLE Student(
-	id INT FOREIGN KEY REFERENCES USERS(id),
-	GPA DECIMAL(2,2))
+	id INT PRIMARY KEY FOREIGN KEY REFERENCES Users(id),
+	gpa DECIMAL(2,2)
 );
 
 
 CREATE TABLE Admin(
-	id INT FOREIGN KEY REFERENCES USERS(id)
+	id INT PRIMARY KEY FOREIGN KEY REFERENCES Users(id)
 );
 
 CREATE TABLE Course(
-	id INT IDENTITY(1,1) PRIMARY KEY;
+	id INT IDENTITY(1,1) PRIMARY KEY,
 	creditHours INT,
 	name VARCHAR(64),
 	courseDescription VARCHAR(512),
+	price INT,
 	content VARCHAR(1024),
-	adminID FOREIGN KEY REFERENCES ADMIN(id),
-	instructorID FOREIGN KEY REFERENCES INSTRUCTOR(id),
+	accepted BIT,
+	adminId INT FOREIGN KEY REFERENCES Admin(id),
+	instructorId INT FOREIGN KEY REFERENCES Instructor(id),
 );
 
 CREATE TABLE Assignment(
-	cid INT FOREIGN KEY REFERENCES COURSE(id),
+	cid INT FOREIGN KEY REFERENCES Course(id),
 	number INT,
 	type INT,
 	fullGrade DECIMAL(2,2),
@@ -56,26 +58,25 @@ CREATE TABLE Assignment(
 );
 
 CREATE TABLE Feedback(
-	cid INT FOREIGN KEY REFERENCES COURSE(id),
+	cid INT FOREIGN KEY REFERENCES Course(id),
 	number INT,
-	type INT,
-	numLikes INT,
+	numberOfLikes INT,
 	comments VARCHAR(1024),
-	sid INT FOREIGN KEY REFERENCES STUDENT(id),
-       	PRIMARY KEY(cid,number,sid)
+	sid INT FOREIGN KEY REFERENCES Student(id),
+    PRIMARY KEY(cid,number)
 );
 
-CREATE TABLE PromoCode(
-	code varchar(16) PRIMARY KEY,
+CREATE TABLE Promocode(
+	code VARCHAR(16) PRIMARY KEY,
 	issueDate DATE,
 	expiryDate DATE,
 	discountAmount DECIMAL(3,3),
-	adminID FOREIGN KEY REFERENCES ADMIN(id)
+	adminID INT FOREIGN KEY REFERENCES Admin(id)
 );
 
-CREATE TABLE StudentHasPromoCode(
-	sid INT FOREIGN KEY REFERENCES STUDENT(id),
-	code INT FOREIGN KEY REFERENCES PROMOCODE(code),
+CREATE TABLE StudentHasPromocode(
+	sid INT FOREIGN KEY REFERENCES Student(id),
+	code INT FOREIGN KEY REFERENCES Promocode(code),
 	PRIMARY KEY(sid,code)
 );
 
