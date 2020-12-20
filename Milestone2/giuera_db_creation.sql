@@ -6,8 +6,9 @@ CREATE TABLE Users(
 	id INT IDENTITY(1,1) PRIMARY KEY,
 	firstName VARCHAR(64),
 	lastName  VARCHAR(64),
+	password VARCHAR(64),
 	gender VARCHAR(8),
-	email VARCHAR(128),
+	email VARCHAR(128) UNIQUE,
 	address VARCHAR(128),
 );
 
@@ -39,7 +40,7 @@ CREATE TABLE Course(
 	creditHours INT,
 	name VARCHAR(64),
 	courseDescription VARCHAR(512),
-	price INT,
+	price DECIMAL(2,2),
 	content VARCHAR(1024),
 	accepted BIT,
 	adminId INT FOREIGN KEY REFERENCES Admin(id),
