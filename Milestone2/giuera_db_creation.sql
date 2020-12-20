@@ -81,6 +81,50 @@ CREATE TABLE StudentHasPromocode(
 	PRIMARY KEY(sid,code)
 );
 
+CREATE TABLE CreditCard(
+	number VARCHAR(64) PRIMARY KEY,
+	cardHolderName VARCHAR(64),
+	expiryDate DATE,
+	cvv VARCHAR(8)
+);
+
+CREATE TABLE StudentAddCreditCard(
+	sid INT FOREIGN KEY REFERENCES Student(id),
+	creditCardNumber VARCHAR(64) FOREIGN KEY REFERENCES CreditCard(number),
+	PRIMARY KEY(sid, creditCardNumber)
+);
+
+CREATE TABLE StudentTakeCourse(
+	sid INT FOREIGN KEY REFERENCES Student(id),
+	cid INT FOREIGN KEY REFERENCES Course(id),
+	instId INT FOREIGN KEY REFERENCES Instructor(id),
+	payedfor BIT,
+	grade DECIMAL(2,2),
+	PRIMARY KEY(sid,cid,instId)
+);
+
+CREATE TABLE StudentTakeAssignment(
+	sid INT FOREIGN KEY REFERENCES Student(id),
+	cid INT FOREIGN KEY REFERENCES Course(id),
+	assignmentNumber INT FOREIGN KEY REFERENCES Assignment(number),
+	assignmentType INT FOREIGN KEY REFERENCES Assignment(type),
+	PRIMARY KEY(sid,cid,assignmentNumber,assignmentType)
+);
+
+CREATE TABLE StudentRateInstructor(
+	sid INT FOREIGN KEY REFERENCES Student(id),
+	instId INT FOREIGN KEY REFERENCES Instructor(id),
+	rate TINYINT,
+	PRIMARY KEY(sid,instId)
+);
+
+CREATE TABLE StudentCertifyCourse(
+	sid INT FOREIGN KEY REFERENCES Student(id),
+	cid INT FOREIGN KEY REFERENCES Course(id),
+	issueDate DATE,
+	PRIMARY KEY(sid,cid)
+);
+
 
 
 
