@@ -126,7 +126,7 @@ CREATE TABLE StudentCertifyCourse(
 	PRIMARY KEY(sid,cid)
 );
 
-CREATE TABLE CoursePrerequisiteCours(
+CREATE TABLE CoursePrerequisiteCourse(
 	prerequisteId INT FOREIGN KEY REFERENCES Course(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	cid INT FOREIGN KEY REFERENCES Course(id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY(prerequisteId,cid)
