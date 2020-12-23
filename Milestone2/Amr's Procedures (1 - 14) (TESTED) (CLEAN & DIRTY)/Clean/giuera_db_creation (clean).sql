@@ -108,6 +108,7 @@ CREATE TABLE StudentTakeAssignment(
 	assignmentNumber INT,
 	cid INT,
 	assignmentType INT,
+	grade DECIMAL(4,2),
 	FOREIGN KEY (cid, assignmentNumber, assignmentType) REFERENCES Assignment(cid, number,type),
 	PRIMARY KEY(sid,assignmentNumber,cid,assignmentType)
 );

@@ -1,6 +1,7 @@
 CREATE DATABASE GIUERA
 USE GIUERA
 
+
 CREATE TABLE Users(
 	id INT IDENTITY(1,1) PRIMARY KEY,
 	firstName VARCHAR(20),
@@ -26,7 +27,7 @@ CREATE TABLE Instructor(
 
 CREATE TABLE Student(
 	id INT PRIMARY KEY FOREIGN KEY REFERENCES Users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	gpa DECIMAL(2,2)
+	gpa DECIMAL(3,2)
 );
 
 
@@ -99,7 +100,6 @@ CREATE TABLE StudentTakeCourse(
 	cid INT FOREIGN KEY REFERENCES Course(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
 	instId INT FOREIGN KEY REFERENCES Instructor(id),
 	payedfor BIT,
-	grade DECIMAL(10,2),
 	PRIMARY KEY(sid,cid,instId)
 );
 
@@ -108,6 +108,7 @@ CREATE TABLE StudentTakeAssignment(
 	assignmentNumber INT,
 	cid INT,
 	assignmentType VARCHAR(10),
+	grade DECIMAL(10,2),
 	FOREIGN KEY (cid, assignmentNumber, assignmentType) REFERENCES Assignment(cid, number,type) ON DELETE NO ACTION ON UPDATE NO ACTION,
 	PRIMARY KEY(sid,assignmentNumber,cid,assignmentType)
 );
