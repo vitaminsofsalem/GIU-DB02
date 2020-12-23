@@ -352,3 +352,138 @@ AS
 GO
 
 
+--Procs from 14 to 29--	
+
+CREATE PROC availablecourses
+AS
+	SELECT  name,price 
+	FROM Course WHERE 	
+	ACCEPTED = TRUE
+GO;
+
+CREATE PROC courseInformation
+	@id INT
+AS
+	SELECT C.courseDescription,U.firstName,U.lastName
+	FROM Course C,Users U
+	WHERE U.id = C.instructorId
+GO;
+
+
+CREATE PROC enrollInCourse
+	@sid INT,
+	@cid INT,
+	@instr INT
+AS
+	INSERT INTO StudentTakeCourse
+		(sid,cid,instId)
+	VALUES (@sid,@cid,@instr)
+GO;
+
+
+CREATE PROC addCreditCard
+	 @sid int,
+	 @number varchar(15),
+	 @cardHolderName varchar(16),
+	 @expiryDate datetime,
+	 @cvv varchar(3)
+AS
+	INSERT INTO CreditCard
+		(cardHolderName,expiryDate,cvv)	
+	VALUES (@cardHolderName,@expiryDate,@cvv);
+
+	INSERT INTO StudentAddCreditCard
+		(sid,creditCardNumber)
+	VALUES (@sid,@number);
+GO;
+
+
+CREATE PROC viewPromocode
+	@sid INT
+AS
+	SELECT code FROM StudentHasPromocode
+	WHERE @sid=StudentHasPromocode.sid
+GO;
+
+
+CREATE PROC payCourse
+	@cid INT,
+	@sid INT
+AS
+
+GO;
+
+CREATE PROC enrollInCourseViewConent
+	@id INT,
+	@sid INT
+AS
+	SELECT Content FROM StudentTakeCourse JOIN Course ON content.sid=StudentTakeCourse.sid
+	WHERE sid=@sid AND cid=@id
+GO;
+
+CREATE PROC viewAssign
+	@cid INT,
+	@sid INT
+AS
+GO;
+
+CREATE PROC submitAssign
+	 @assignType VARCHAR(10),
+	 @assignnumber int, 
+	 @sid INT,
+	 @cid INT
+AS
+	INSERT INTO StudentTakeAssignment
+		(sid,assignmentNumber,cid,assignmentType)
+	VALUES (@sid,@assignnumber,@cid,@assignType);
+GO;
+
+
+
+CREATE PROC viewAssignGrades
+	 @assignType VARCHAR(10),
+	 @assignnumber int, 
+	 @sid INT,
+	 @cid INT
+AS
+	INSERT INTO StudentTakeAssignment
+		(sid,assignmentNumber,cid,assignmentType)
+	VALUES (@sid,@assignnumber,@cid,@assignType);
+GO;
+
+
+CREATE PROC viewFinalGrade
+	@cid INT,
+	@sid INT,
+	@finalGrade DECIMAL(10,2)
+AS
+GO;
+
+
+
+CREATE PROC addFeedback
+	@cid INT,
+	@sid INT,
+	@comment VARCHAR(100);
+AS
+GO;
+
+
+
+
+CREATE PROC rateInstructor
+	@cid INT,
+	@sid INT,
+	@rate DECIMAL(2,1)
+AS
+GO;
+
+
+
+CREATE PROC viewCertificate;
+	@cid INT,
+	@sid INT
+AS
+GO;
+
+
