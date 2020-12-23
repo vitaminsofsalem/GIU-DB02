@@ -100,6 +100,7 @@ CREATE TABLE StudentTakeCourse(
 	cid INT FOREIGN KEY REFERENCES Course(id) ON DELETE NO ACTION ON UPDATE NO ACTION,
 	instId INT FOREIGN KEY REFERENCES Instructor(id),
 	payedfor BIT,
+	grade DECIMAL(10,2),
 	PRIMARY KEY(sid,cid,instId)
 );
 
@@ -108,7 +109,7 @@ CREATE TABLE StudentTakeAssignment(
 	assignmentNumber INT,
 	cid INT,
 	assignmentType VARCHAR(10),
-	grade DECIMAL(10,2),
+	grade DECIMAL(5,2),
 	FOREIGN KEY (cid, assignmentNumber, assignmentType) REFERENCES Assignment(cid, number,type) ON DELETE NO ACTION ON UPDATE NO ACTION,
 	PRIMARY KEY(sid,assignmentNumber,cid,assignmentType)
 );
