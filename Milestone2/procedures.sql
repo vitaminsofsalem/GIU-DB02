@@ -352,7 +352,7 @@ AS
 GO
 
 
---Procs from 14 to 29--	
+--Procs from 14 to 28--	
 
 CREATE PROC availablecourses
 AS
@@ -410,7 +410,7 @@ CREATE PROC payCourse
 	@cid INT,
 	@sid INT
 AS
-
+	UPDATE StudentTakeCourse SET payedfor=TRUE WHERE @cid=cid AND @sid=sid
 GO;
 
 CREATE PROC enrollInCourseViewConent
