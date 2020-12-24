@@ -1,3 +1,4 @@
+
 USE GIUERA
 
 EXEC studentRegister 
@@ -8,14 +9,6 @@ EXEC studentRegister
 @Gender​=1,
 ​@address​='nasr city'
 
-
-EXEC studentRegister 
-@first_name="sergey",
-@last_name="urgov",
-@password=​'490430fsavkjfv',
-@email=​'serg2006@mail.ru',
-@Gender​=0,
-​@address​='nec. st'
 
 SELECT * FROM Student S JOIN Users U ON s.id=U.ID
 
@@ -33,5 +26,13 @@ DECLARE @type BIT
 
 EXEC userLogin @id=1,@password='merna',@success = @success OUTPUT,@type = @type OUTPUT
 
-PRINT @success
-PRINT @type
+PRINT N'success = ' +  CAST(@success as varchar(1))
+PRINT N'type = ' +  CAST(@type as varchar(1))
+
+EXEC userLogin @id=3,@password='rana',@success = @success OUTPUT,@type = @type OUTPUT
+
+PRINT N'success = ' +  CAST(@success as varchar(1))
+PRINT N'type = ' +  CAST(@type as varchar(1))
+
+EXEC addMobile @id=1,@mobile_number='01299969493';
+
