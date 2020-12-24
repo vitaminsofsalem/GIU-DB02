@@ -465,7 +465,7 @@ AS
 		SELECT grade FROM StudentTakeCourse WHERE
 		@sid=sid AND @cid=cid
 	)
-GO;
+GO
 
 
 
@@ -494,7 +494,7 @@ AS
 
 	EXEC updateInstructorRate @instId
 
-GO;
+GO
 
 
 
@@ -503,7 +503,7 @@ CREATE PROC viewCertificate
 	@sid INT
 AS
 	SELECT * FROM StudentCertifyCourse WHERE @sid=sid AND @cid=cid
-GO;
+GO
 
 
 
