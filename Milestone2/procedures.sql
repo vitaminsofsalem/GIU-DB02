@@ -425,6 +425,9 @@ CREATE PROC viewAssign
 	@cid INT,
 	@sid INT
 AS
+	SELECT * FROM 
+	Assignment JOIN STudentTakeAssignment ON number=assignmentNumber WHERE
+	sid=@sid
 GO;
 
 CREATE PROC submitAssign
@@ -444,11 +447,13 @@ CREATE PROC viewAssignGrades
 	 @assignType VARCHAR(10),
 	 @assignnumber int, 
 	 @sid INT,
-	 @cid INT
+	 @cid INT,
+	 @assignGrade decimal(5,2)
 AS
-	INSERT INTO StudentTakeAssignment
-		(sid,assignmentNumber,cid,assignmentType)
-	VALUES (@sid,@assignnumber,@cid,@assignType);
+	SET @assignGrade =  (
+		SELECT grade FROM Assignment JOIN StudentTakeAssignment ON number=assignmentNumber WHERE
+		@sid=sid AND @assignnumber=number AND @cid=cid and @assignType = type
+	)
 GO;
 
 
@@ -464,7 +469,7 @@ GO;
 CREATE PROC addFeedback
 	@cid INT,
 	@sid INT,
-	@comment VARCHAR(100);
+	@comment VARCHAR(100)
 AS
 GO;
 
@@ -480,7 +485,7 @@ GO;
 
 
 
-CREATE PROC viewCertificate;
+CREATE PROC viewCertificate
 	@cid INT,
 	@sid INT
 AS
