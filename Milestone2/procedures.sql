@@ -326,7 +326,7 @@ GO
 CREATE PROC viewMyProfile
 	@id INT
 AS
-	SELECT s.id, gpa, firstName, lastName, password, gener, email, address FROM Student s INNER JOIN Users u
+	SELECT s.id, gpa, firstName, lastName, password, gender, email, address FROM Student s INNER JOIN Users u
 	ON s.id = u.id
 	WHERE s.id = @id;
 GO
@@ -451,7 +451,7 @@ CREATE PROC viewAssignGrades
 AS
 	SET @assignGrade =  (
 		SELECT grade FROM Assignment JOIN StudentTakeAssignment ON number=assignmentNumber WHERE
-		@sid=sid AND @assignnumber=number AND @cid=cid and @assignType = type
+		@sid=sid AND @assignnumber=number AND @cid=Assignment.cid and @assignType = type
 	)
 GO
 
