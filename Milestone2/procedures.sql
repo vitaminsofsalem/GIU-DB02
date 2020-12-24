@@ -269,10 +269,9 @@ CREATE PROC ViewInstructorProfile
 AS
 	EXEC updateInstructorRate @instId
 
-	SELECT firstName, lastName, gender, email, address, rating, mobileNumber
-	FROM UserMobileNumber INNER JOIN (Instructor INNER JOIN Users
-	ON Instructor.id = Users.id)
-	ON UserMobileNumber.id = Instructor.id
+	SELECT firstName, lastName, gender, email, address, rating
+	FROM Instructor INNER JOIN Users
+	ON Instructor.id = Users.id
 	WHERE Instructor.id = @instId;
 GO
 
