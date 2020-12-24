@@ -1,0 +1,176 @@
+
+[3:57:16 PM]	Started executing query at Line 2
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 15
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 29
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 43
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 72
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 80
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 85
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 100
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 105
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 113
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 120
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 135
+	
+	Msg 207, Level 16, State 1, Procedure adminCreatePromocode, Line 9
+Invalid column name 'discount'. 
+	
+[3:57:16 PM]	Started executing query at Line 146
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 157
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 166
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 180
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 196
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 206
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 214
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 225
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 231
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 238
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 254
+	
+	The module 'ViewInstructorProfile' depends on the missing object 'updateInstructorRate'. The module will still be created; however, it cannot run successfully until the object exists. 
+	
+[3:57:16 PM]	Started executing query at Line 268
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 281
+	
+	Msg 209, Level 16, State 1, Procedure InstructorViewAssignmentsStudents, Line 6
+Ambiguous column name 'cid'. 
+	
+[3:57:16 PM]	Started executing query at Line 292
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 306
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 315
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 327
+	
+	Msg 209, Level 16, State 1, Procedure viewMyProfile, Line 5
+Ambiguous column name 'id'. 
+	
+	Msg 207, Level 16, State 1, Procedure viewMyProfile, Line 5
+Invalid column name 'gener'. 
+	
+[3:57:16 PM]	Started executing query at Line 335
+	
+	Commands completed successfully. 
+	
+[3:57:16 PM]	Started executing query at Line 354
+	
+	Msg 102, Level 15, State 1, Procedure availablecourses, Line 10
+Incorrect syntax near 'GO'. 
+	
+	Msg 102, Level 15, State 1, Procedure availablecourses, Line 18
+Incorrect syntax near 'GO'. 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 28
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 41
+Must declare the scalar variable "@cardHolderName". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 45
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 53
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 61
+Must declare the scalar variable "@cid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 69
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 78
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 89
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 103
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 115
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 128
+Must declare the scalar variable "@cid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 142
+Must declare the scalar variable "@sid". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 144
+Must declare the scalar variable "@instId". 
+	
+	Msg 137, Level 15, State 2, Procedure availablecourses, Line 154
+Must declare the scalar variable "@sid". 
