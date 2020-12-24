@@ -340,12 +340,12 @@ CREATE PROC editMyProfile
 	@address VARCHAR(10)
 AS
 	UPDATE Users SET
-	firstName = @firstName,
-	lastName = @lastName,
-	password = @password,
-	gender = @gender,
-	email = @email,
-	address = @address
+	firstName = ISNULL (@firstName,firstName),
+	lastName = ISNULL (@lastName, lastName),
+	password = ISNULL (@password, password),
+	gender = ISNULL (@gender,gender),
+	email = ISNULL (@email, email),
+	address = ISNULL (@address, address)
 	WHERE Users.id = @id;
 GO
 
