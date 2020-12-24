@@ -60,8 +60,8 @@ CREATE TABLE Assignment(
 );
 
 CREATE TABLE Feedback(
+	number INT IDENTITY(1,1),
 	cid INT FOREIGN KEY REFERENCES Course(id) ON DELETE CASCADE ON UPDATE CASCADE,
-	number INT,
 	numberOfLikes INT,
 	comment VARCHAR(100),
 	sid INT FOREIGN KEY REFERENCES Student(id) ON DELETE NO ACTION ON UPDATE NO ACTION, --Has to be no action, else it will go into cascade loop
