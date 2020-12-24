@@ -432,7 +432,7 @@ GO;
 
 CREATE PROC submitAssign
 	 @assignType VARCHAR(10),
-	 @assignnumber int, 
+	 @assignnumber INT, 
 	 @sid INT,
 	 @cid INT
 AS
@@ -445,10 +445,10 @@ GO;
 
 CREATE PROC viewAssignGrades
 	 @assignType VARCHAR(10),
-	 @assignnumber int, 
+	 @assignnumber INT, 
 	 @sid INT,
 	 @cid INT,
-	 @assignGrade decimal(5,2)
+	 @assignGrade DECIMAL(5,2)
 AS
 	SET @assignGrade =  (
 		SELECT grade FROM Assignment JOIN StudentTakeAssignment ON number=assignmentNumber WHERE
@@ -462,6 +462,10 @@ CREATE PROC viewFinalGrade
 	@sid INT,
 	@finalGrade DECIMAL(10,2)
 AS
+	SET @finalGrade = (
+		SELECT grade FROM StudentTakeCourse WHERE
+		@sid=sid AND @cid=cid
+	)
 GO;
 
 
@@ -471,16 +475,26 @@ CREATE PROC addFeedback
 	@sid INT,
 	@comment VARCHAR(100)
 AS
+	INSERT INTO Feedback
+		(cid,comment,sid)
+	VALUES (@cid,@comment,@sid)
 GO;
 
 
 
 
 CREATE PROC rateInstructor
-	@cid INT,
 	@sid INT,
+	@instId INT,
 	@rate DECIMAL(2,1)
 AS
+
+	INSERT INTO StudentRateInstructor
+		(sid,instId,rate)
+	VALUES (@sid,@instId,@rate)
+
+	UPDATE Instructor SET rating = (SELECT AVG(rate) FROM StudentRateInstructor WHERE @instId = instId)
+	WHERE @instId = instId
 GO;
 
 
@@ -489,6 +503,7 @@ CREATE PROC viewCertificate
 	@cid INT,
 	@sid INT
 AS
+	SELECT * FROM StudentCertifyCourse WHERE @sid=sid AND @cid=cid
 GO;
 
 
