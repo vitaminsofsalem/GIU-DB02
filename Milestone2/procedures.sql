@@ -425,7 +425,7 @@ CREATE PROC viewAssign
 	@sid INT
 AS
 	SELECT * FROM 
-	Assignment JOIN STudentTakeAssignment ON number=assignmentNumber WHERE
+	Assignment JOIN StudentTakeAssignment ON number=assignmentNumber WHERE
 	sid=@sid
 GO
 
