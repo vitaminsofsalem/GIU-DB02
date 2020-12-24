@@ -79,7 +79,7 @@ GO
 
 CREATE PROCEDURE adminListInstr
 AS
-SELECT * FROM Instructor
+SELECT u.id, u.firstName, u.lastName FROM Instructor i INNER JOIN Users u ON i.id = u.id
 GO
 
 CREATE PROCEDURE adminViewInstrcutorProfile 
