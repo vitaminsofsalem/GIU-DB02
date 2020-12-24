@@ -139,7 +139,7 @@ CREATE PROCEDURE adminCreatePromocode
     @discount DECIMAL (4,2),
     @adminID INT
 AS
-	INSERT INTO Promocode (code, issueDate, expiryDate, discount, adminID)
+	INSERT INTO Promocode (code, issueDate, expiryDate, discountAmount, adminID)
 	VALUES (@code, @issueDate, @expiryDate, @discount, @adminID)
 GO
 
@@ -193,7 +193,7 @@ AS
 	END
 GO
 
---
+-- 14 to 28
 
 CREATE PROC UpdateCourseContent
 	@instrId INT,
@@ -251,7 +251,18 @@ AS
 	WHERE ic.cid = @cid AND ic.instId = @instId;
 GO
 
-
+CREATE PROC updateInstructorRate --reorderd to be created first, because ViewInstructorProfile depends on it
+	@instId INT
+AS
+	UPDATE ins SET ins.rating = r.average
+	FROM
+	Instructor ins
+	INNER JOIN
+	(SELECT instId, AVG(rate) AS average
+	FROM StudentRateInstructor s
+	GROUP BY instId) r
+	ON instId = ins.id;
+GO
 
 CREATE PROC ViewInstructorProfile
 	@instId INT
@@ -265,24 +276,12 @@ AS
 	WHERE Instructor.id = @instId;
 GO
 
-CREATE PROC updateInstructorRate
-	@instId INT
-AS
-	UPDATE ins SET ins.rating = r.average
-	FROM
-	Instructor ins
-	INNER JOIN
-	(SELECT instId, AVG(rate) AS average
-	FROM StudentRateInstructor s
-	GROUP BY instId) r
-	ON instId = ins.id;
-GO
 
 CREATE PROC InstructorViewAssignmentsStudents
 	@instId INT,
 	@cid INT
 AS
-	SELECT sid, cid, assignmentNumber, assignmentType
+	SELECT sid, a.cid, assignmentNumber, assignmentType
 	FROM Assignment a INNER JOIN (StudentTakeAssignment sa INNER JOIN InstructorTeachCourse ic
 	ON sa.cid = ic.cid)
 	ON a.number = sa.assignmentNumber AND a.cid =  sa.cid AND a.type = sa.assignmentType
@@ -327,7 +326,7 @@ GO
 CREATE PROC viewMyProfile
 	@id INT
 AS
-	SELECT id, gpa, firstName, lastName, password, gener, email, address FROM Student s INNER JOIN Users u
+	SELECT s.id, gpa, firstName, lastName, password, gener, email, address FROM Student s INNER JOIN Users u
 	ON s.id = u.id
 	WHERE s.id = @id;
 GO
@@ -358,8 +357,8 @@ CREATE PROC availablecourses
 AS
 	SELECT  name,price 
 	FROM Course WHERE 	
-	ACCEPTED = TRUE
-GO;
+	accepted = 1
+GO
 
 CREATE PROC courseInformation
 	@id INT
@@ -367,7 +366,7 @@ AS
 	SELECT C.courseDescription,U.firstName,U.lastName
 	FROM Course C,Users U
 	WHERE U.id = C.instructorId
-GO;
+GO
 
 
 CREATE PROC enrollInCourse
@@ -378,7 +377,7 @@ AS
 	INSERT INTO StudentTakeCourse
 		(sid,cid,instId)
 	VALUES (@sid,@cid,@instr)
-GO;
+GO
 
 
 CREATE PROC addCreditCard
@@ -389,29 +388,29 @@ CREATE PROC addCreditCard
 	 @cvv varchar(3)
 AS
 	INSERT INTO CreditCard
-		(cardHolderName,expiryDate,cvv)	
-	VALUES (@cardHolderName,@expiryDate,@cvv);
+		(number,cardHolderName,expiryDate,cvv)	
+	VALUES (@number,@cardHolderName,@expiryDate,@cvv);
 
 	INSERT INTO StudentAddCreditCard
 		(sid,creditCardNumber)
 	VALUES (@sid,@number);
-GO;
+GO
 
 
 CREATE PROC viewPromocode
 	@sid INT
 AS
 	SELECT code FROM StudentHasPromocode
-	WHERE StudentHasPromocode.sid=@sid;
-GO;
+	WHERE @sid=StudentHasPromocode.sid
+GO
 
 
 CREATE PROC payCourse
 	@cid INT,
 	@sid INT
 AS
-	UPDATE StudentTakeCourse SET payedfor=TRUE WHERE @cid=cid AND @sid=sid
-GO;
+	UPDATE StudentTakeCourse SET payedfor=1 WHERE @cid=cid AND @sid=sid
+GO
 
 CREATE PROC enrollInCourseViewConent
 	@id INT,
@@ -419,7 +418,7 @@ CREATE PROC enrollInCourseViewConent
 AS
 	SELECT Content FROM StudentTakeCourse JOIN Course ON sid=StudentTakeCourse.sid
 	WHERE sid=@sid AND cid=@id
-GO;
+GO
 
 CREATE PROC viewAssign
 	@cid INT,
@@ -428,7 +427,7 @@ AS
 	SELECT * FROM 
 	Assignment JOIN STudentTakeAssignment ON number=assignmentNumber WHERE
 	sid=@sid
-GO;
+GO
 
 CREATE PROC submitAssign
 	 @assignType VARCHAR(10),
@@ -439,7 +438,7 @@ AS
 	INSERT INTO StudentTakeAssignment
 		(sid,assignmentNumber,cid,assignmentType)
 	VALUES (@sid,@assignnumber,@cid,@assignType);
-GO;
+GO
 
 
 
@@ -451,10 +450,10 @@ CREATE PROC viewAssignGrades
 	 @assignGrade DECIMAL(5,2)
 AS
 	SET @assignGrade =  (
-		SELECT grade FROM Assignment A JOIN StudentTakeAssignment T 
-		ON A.number=T.assignmentNumber WHERE T.sid=@sid AND A.number=@assignnumber AND A.cid=@cid and  A.type = @assignType
+		SELECT grade FROM Assignment JOIN StudentTakeAssignment ON number=assignmentNumber WHERE
+		@sid=sid AND @assignnumber=number AND @cid=cid and @assignType = type
 	)
-GO;
+GO
 
 
 CREATE PROC viewFinalGrade
@@ -464,7 +463,7 @@ CREATE PROC viewFinalGrade
 AS
 	SET @finalGrade = (
 		SELECT grade FROM StudentTakeCourse WHERE
-		sid=@sid AND cid=@cid
+		@sid=sid AND @cid=cid
 	)
 GO;
 
@@ -478,7 +477,7 @@ AS
 	INSERT INTO Feedback
 		(cid,comment,sid)
 	VALUES (@cid,@comment,@sid)
-GO;
+GO
 
 
 
@@ -493,8 +492,8 @@ AS
 		(sid,instId,rate)
 	VALUES (@sid,@instId,@rate)
 
-	UPDATE Instructor SET rating = (SELECT AVG(rate) FROM StudentRateInstructor WHERE instId = @instId)
-	WHERE instId = @instId
+	EXEC updateInstructorRate @instId
+
 GO;
 
 
