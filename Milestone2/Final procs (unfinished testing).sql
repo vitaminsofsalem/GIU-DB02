@@ -1,3 +1,6 @@
+
+
+
 CREATE PROCEDURE studentRegister 
 	@first_name VARCHAR(20), 
     @last_name VARCHAR (20),
@@ -139,7 +142,7 @@ CREATE PROCEDURE adminCreatePromocode
     @discount DECIMAL (4,2),
     @adminID INT
 AS
-	INSERT INTO Promocode (code, issueDate, expiryDate, discount, adminID)
+	INSERT INTO Promocode (code, issueDate, expiryDate, discountAmount, adminID)
 	VALUES (@code, @issueDate, @expiryDate, @discount, @adminID)
 GO
 
@@ -328,7 +331,7 @@ GO
 CREATE PROC viewMyProfile
 	@id INT
 AS
-	SELECT id, gpa, firstName, lastName, password, gender, email, address 
+	SELECT s.id, gpa, firstName, lastName, password, gender, email, address 
 	FROM Student s
 	INNER JOIN Users u
 	ON s.id = u.id
@@ -420,7 +423,7 @@ CREATE PROC enrollInCourseViewConent
 	@id INT,
 	@sid INT
 AS
-	SELECT Content FROM StudentTakeCourse JOIN Course ON content.sid=StudentTakeCourse.sid
+	SELECT Content FROM StudentTakeCourse JOIN Course ON sid=StudentTakeCourse.sid
 	WHERE sid=@sid AND cid=@id
 GO
 
@@ -439,7 +442,7 @@ CREATE PROC submitAssign
 	 @sid INT,
 	 @cid INT
 AS
-	INSERT INTO sa
+	INSERT INTO StudentTakeAssignment
 		(sid,assignmentNumber,cid,assignmentType)
 	VALUES (@sid,@assignnumber,@cid,@assignType);
 GO
