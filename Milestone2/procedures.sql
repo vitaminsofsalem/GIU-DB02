@@ -331,7 +331,7 @@ AS
 GO
 
 CREATE PROC editMyProfile
-	@id INT = NULL,
+	@id INT,
 	@firstName VARCHAR(10) = NULL,
 	@lastName VARCHAR(10) = NULL,
 	@password VARCHAR(10) = NULL,
@@ -348,7 +348,8 @@ AS
 	address = ISNULL (@address, address)
 	WHERE Users.id = @id;
 GO
-
+exec editMyProfile  @id = 1, @address = 'dkdkdk'
+select * from Users
 --Procs from 14 to 28--	
 
 CREATE PROC availablecourses
