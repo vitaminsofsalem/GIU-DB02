@@ -402,7 +402,7 @@ CREATE PROC viewPromocode
 	@sid INT
 AS
 	SELECT code FROM StudentHasPromocode
-	WHERE @sid=StudentHasPromocode.sid
+	WHERE StudentHasPromocode.sid=@sid;
 GO;
 
 
@@ -417,7 +417,7 @@ CREATE PROC enrollInCourseViewConent
 	@id INT,
 	@sid INT
 AS
-	SELECT Content FROM StudentTakeCourse JOIN Course ON content.sid=StudentTakeCourse.sid
+	SELECT Content FROM StudentTakeCourse JOIN Course ON sid=StudentTakeCourse.sid
 	WHERE sid=@sid AND cid=@id
 GO;
 
@@ -451,8 +451,8 @@ CREATE PROC viewAssignGrades
 	 @assignGrade DECIMAL(5,2)
 AS
 	SET @assignGrade =  (
-		SELECT grade FROM Assignment JOIN StudentTakeAssignment ON number=assignmentNumber WHERE
-		@sid=sid AND @assignnumber=number AND @cid=cid and @assignType = type
+		SELECT grade FROM Assignment A JOIN StudentTakeAssignment T 
+		ON A.number=T.assignmentNumber WHERE T.sid=@sid AND A.number=@assignnumber AND A.cid=@cid and  A.type = @assignType
 	)
 GO;
 
@@ -464,7 +464,7 @@ CREATE PROC viewFinalGrade
 AS
 	SET @finalGrade = (
 		SELECT grade FROM StudentTakeCourse WHERE
-		@sid=sid AND @cid=cid
+		sid=@sid AND cid=@cid
 	)
 GO;
 
@@ -493,8 +493,8 @@ AS
 		(sid,instId,rate)
 	VALUES (@sid,@instId,@rate)
 
-	UPDATE Instructor SET rating = (SELECT AVG(rate) FROM StudentRateInstructor WHERE @instId = instId)
-	WHERE @instId = instId
+	UPDATE Instructor SET rating = (SELECT AVG(rate) FROM StudentRateInstructor WHERE instId = @instId)
+	WHERE instId = @instId
 GO;
 
 
@@ -505,5 +505,6 @@ CREATE PROC viewCertificate
 AS
 	SELECT * FROM StudentCertifyCourse WHERE @sid=sid AND @cid=cid
 GO;
+
 
 
