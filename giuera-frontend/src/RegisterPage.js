@@ -14,16 +14,16 @@ class RegisterPage extends React.Component{
 			first_name:'',
 			last_name:'',
 			email:'',
-			gender:'',
+			gender:'u',
 			address:'',
 			password:'',
-			sign_up_as:'',
+			sign_up_as:'u',
 			registerSucceeded:'',
 			msg:''
 		}
 	}
 
-	
+
 	sendSubmission = async (sub) =>{ //send sign in submission to backend
  
 		const request={           //creating request 
@@ -66,11 +66,11 @@ class RegisterPage extends React.Component{
 	}
 
 	onSelectMale=(event)=>{
-		this.setState({gender : '0'})
+		this.setState({gender : 0})
 	}
 
 	onSelectFemale=(event)=>{
-		this.setState({gender : '1'})
+		this.setState({gender : 1})
 	}
 
 	onSelectAsStudent=(event)=>{
