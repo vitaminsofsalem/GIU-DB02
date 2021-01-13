@@ -1,9 +1,13 @@
 
 const DashboardStyles={
 	bg:{
+		margin:'0',
+		padding:'15px',
 		width:"100vw",
 		height:"100vh",
 		backgroundColor:"#222222",
+		display:'flex',
+		flexDirection:'column',
 	},
 	card:{
 		color:"white",
@@ -17,6 +21,7 @@ const DashboardStyles={
 		borderRadius:"10px"
 	},
 	cardsContainer:{
+		margin:"0",
 		backgroundColor:"#222222",
 		display : "flex",
 		flexWrap : "wrap",

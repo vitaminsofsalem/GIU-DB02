@@ -5,6 +5,7 @@ import InputBox from './Form/InputBox'
 import RadioContainer from './Form/RadioContainer'
 import RadioButton from './Form/RadioButton'
 
+import {Link} from 'react-router-dom'
 
 class RegisterPage extends React.Component{
 
@@ -142,7 +143,9 @@ class RegisterPage extends React.Component{
 				<InputBox label="Address" type="text" onChange={this.onAddressChange}/>
 				<InputBox label="password" type="password" onChange={this.onPasswordChange}/>
 				<button onClick={this.onSubmit}>sign up</button>
-				
+				<Link to="/">
+					<button >back</button>
+				</Link>
 			
 			</FormPage>
 			</>

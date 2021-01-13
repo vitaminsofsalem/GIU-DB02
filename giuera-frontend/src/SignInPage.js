@@ -1,4 +1,5 @@
 
+import {Link} from 'react-router-dom'
 import React from 'react'
 import Dashboard from './Dashboard/Dashboard'
 import FormPage from './Form/FormPage'
@@ -15,12 +16,22 @@ class SignInPage extends React.Component{
 
 			userid:'',
 			password:'',
-			signedIn:'0',
+			signedIn:0,
 			signInAs:'',
 			msg:'',
 
 		}
 
+	}
+
+	signOut = (e) => {
+		this.setState({
+			userid:'',
+			password:'',
+			signedIn:0,
+			signInAs:'',
+			msg:'',
+		})
 	}
 
 	onUserIDChange = (event) =>{
@@ -32,6 +43,16 @@ class SignInPage extends React.Component{
 	}
 	
 
+	signInResultMsg = () => {
+
+		if (this.state.signedIn=='err'){
+			return(
+				<h1 style={{color:"tomato"}}>
+					ERROR : {this.state.msg}
+				</h1>
+			)
+		}
+	}
 
 	sendSubmission = async (sub) =>{ //send sign in submission to backend
  
@@ -68,21 +89,31 @@ class SignInPage extends React.Component{
 	}
 
 	render(){
-		if (this.state.signedIn=='1'){
+		if (this.state.signedIn==1){
 			return (
 				<>
 					<NavigBar>
-						<button style={{backgroundColor:'black',color:'white'}}>sign out</button>
+						<button onClick={this.signOut} style={{backgroundColor:'black',color:'white'}}>sign out</button>
 					</NavigBar>
-					<Dashboard userid={this.state.userid}></Dashboard>
+					<Dashboard 
+					user={{
+						id : this.state.userid,
+						type : this.state.signInAs,
+						}}></Dashboard>
 				</>
 			)
 		}
 		return (
+
 			<FormPage header="sign in">
+
+				{this.signInResultMsg()}
 				<InputBox label="id" type="text" onChange={this.onUserIDChange}/>
 				<InputBox label="password" type="password" onChange={this.onPasswordChange}/>
 				<button onClick={this.onSubmit}>sign in</button>
+				<Link to="/">
+					<button >back</button>
+				</Link>
 			</FormPage>
 		)
 	}

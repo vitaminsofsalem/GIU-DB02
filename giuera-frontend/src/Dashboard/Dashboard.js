@@ -49,6 +49,9 @@ class Dashboard extends React.Component{
 		return(
 
 		 <div style={DashboardStyles.bg}>
+			 <h1 style={{color:'white'}}>
+				 userid : {this.props.user.id} {((this.props.user.type==2)? 'student':'instructor')}
+			 </h1>
 			<CardsContainer>
 				<Card header="my courses">
 					<Scrollable>
