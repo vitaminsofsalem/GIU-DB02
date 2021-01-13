@@ -1,9 +1,9 @@
 
 const DashboardStyles={
 	bg:{
-		backgroundColor:"#222222",
 		width:"100vw",
 		height:"100vh",
+		backgroundColor:"#222222",
 	},
 	card:{
 		color:"white",
@@ -17,12 +17,11 @@ const DashboardStyles={
 		borderRadius:"10px"
 	},
 	cardsContainer:{
+		backgroundColor:"#222222",
 		display : "flex",
 		flexWrap : "wrap",
 		flexDirection:"row",
 		width:"100vw",
-		height:"100vh",
-
 	},
 	button:{
 		display:"inline-block",
@@ -38,7 +37,7 @@ const DashboardStyles={
 		justifyContent:"space-around",
 		margin:"10px",
 		width:"90%",
-		height:"100px",
+		height:"200px",
 		padding:"5px",
 		backgroundColor:"#5f5f5f",
 		display:"flex",

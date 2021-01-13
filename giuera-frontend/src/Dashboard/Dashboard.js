@@ -31,7 +31,8 @@ let courses=[
 
 const getCourses = (courseList) => (
 		courseList.map(course => (
-			<InfoBox header={course.name} sub={course.ch}>
+			<InfoBox header={course.name} sub={"credit hours : " + course.ch}>
+			<Button>view</Button>
 			</InfoBox>
 		)
 	)
