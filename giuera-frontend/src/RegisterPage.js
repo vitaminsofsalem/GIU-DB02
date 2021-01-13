@@ -33,7 +33,6 @@ class RegisterPage extends React.Component{
 		} 
 		
 
-		console.log(request)
 
 		let response = await fetch('http://localhost:3001/userregister',request)
 		let data = await response.json();
@@ -43,12 +42,10 @@ class RegisterPage extends React.Component{
 			msg : data.msg
 		})
 
-		console.log(data)
 
 	}
 
 	onFirstNameChange=(event)=>{
-		console.log(this.state)
 		this.setState({first_name : event.target.value})
 	}
 
@@ -79,7 +76,6 @@ class RegisterPage extends React.Component{
 
 	registerResultMsg = () => {
 
-		console.log("ahoy bling : ",this.state.msg)
 		if (this.state.registerSucceeded=='0'){
 			return(
 				<h1 style={{color:"tomato"}}>
