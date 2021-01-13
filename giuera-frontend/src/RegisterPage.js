@@ -10,7 +10,7 @@ class RegisterPage extends React.Component{
 
 	constructor(props){
 		super(props)
-		this.state = {
+		this.state = {      
 			first_name:'',
 			last_name:'',
 			email:'',
@@ -24,21 +24,21 @@ class RegisterPage extends React.Component{
 	}
 
 	
-	sendSubmission = async (sub) =>{
-
-		const request={
-			method : 'POST',
+	sendSubmission = async (sub) =>{ //send sign in submission to backend
+ 
+		const request={           //creating request 
+			method : 'POST',  
 			headers : {'Content-Type' : 'application/json'},
-			body : JSON.stringify(sub)
+			body : JSON.stringify(sub) //storing submission into the body of the request
 		} 
 		
 
 
-		let response = await fetch('http://localhost:3001/userregister',request)
-		let data = await response.json();
+		let response = await fetch('http://localhost:3001/userregister',request) //sends to the backend, then waits for response
+		let data = await response.json(); //convert JSON to javascript object after receiving the response
 		
 		this.setState({
-			registerSucceeded : data.registerSucceeded,
+			registerSucceeded : data.registerSucceeded,  //update state using received object from backend
 			msg : data.msg
 		})
 
@@ -74,7 +74,7 @@ class RegisterPage extends React.Component{
 	}
 
 
-	registerResultMsg = () => {
+	registerResultMsg = () => { //shows user the sign up result
 
 		if (this.state.registerSucceeded=='0'){
 			return(
@@ -93,7 +93,7 @@ class RegisterPage extends React.Component{
 		}
 
 	}
-	onSubmit = (e) => {
+	onSubmit = (e) => { //executed when the sub
 		e.preventDefault()
 
 		let submission = {
@@ -104,7 +104,7 @@ class RegisterPage extends React.Component{
 			gender : this.state.gender ,
 			address : this.state.address ,
 			password : this.state.password 
-		}
+		} //create submission to send
 
 		this.sendSubmission(submission);
 
