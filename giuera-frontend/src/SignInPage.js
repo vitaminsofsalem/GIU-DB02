@@ -10,14 +10,14 @@ class SignInPage extends React.Component{
 		super(props)
 
 		this.state = {
-			username:'',
+			userid:'',
 			password:''
 		}
 
 	}
 
-	onUsernameChange = (event) =>{
-			this.setState({username:event.target.value});
+	onUserIDChange = (event) =>{
+			this.setState({userid:event.target.value});
 	}
 
 	onPasswordChange = (event) =>{
@@ -33,7 +33,7 @@ class SignInPage extends React.Component{
 	render(){
 		return (
 			<FormPage header="sign in">
-				<InputBox label="username" type="text" onChange={this.onUsernameChange}/>
+				<InputBox label="id" type="text" onChange={this.onUserIDChange}/>
 				<InputBox label="password" type="password" onChange={this.onPasswordChange}/>
 				<button onClick={this.onSubmit}>sign in</button>
 			</FormPage>
