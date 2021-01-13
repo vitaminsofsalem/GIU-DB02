@@ -42,6 +42,16 @@ const FormStyles = {
 		fontSize:"40px",
 		border : "solid white 2px",
 		borderRadius : "10px",
+	},
+	radioContainer:{
+		display:"flex",
+		flexDirection:"right",
+		color : "white",
+		fontSize:"40px",
+	},
+	radioButton:{
+		fontSize:"20px",
+		margin:"10px"
 	}
 
 }
