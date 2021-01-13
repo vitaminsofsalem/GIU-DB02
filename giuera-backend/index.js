@@ -10,12 +10,17 @@ const dbconfig = { //config for connecting to our mssql server
     database: 'GIUERA',
 }
 
-
+let db;
 const app = express()
 app.listen(3001)
 
 app.use(cors())
 app.use(express.json())
+
+app.use(async (req,res,next)=>{
+	db=await sql.connect(dbconfig)
+	next()
+})
 
 
 const getUserID = async (db,email) =>{ //returns the ID of the user
@@ -56,9 +61,7 @@ app.post('/userregister', async (req,res)=>{
 		let submission = req.body //receives data sent by the request from front end
 
 
-		let mydb = await sql.connect(dbconfig) //establish connection with the database
-
-		let dbres = await mydb.request() 
+		let dbres = await db.request() 
 			.input('first_name',sql.VarChar,submission.first_name)
 			.input('last_name',sql.VarChar,submission.last_name)
 			.input('password',sql.VarChar,submission.password)
@@ -69,7 +72,7 @@ app.post('/userregister', async (req,res)=>{
 				
 
 		
-		userID = await getUserID(mydb,submission.email); //get the id of the new user
+		userID = await getUserID(db,submission.email); //get the id of the new user
 
 		console.log(dbres);
 
@@ -79,11 +82,12 @@ app.post('/userregister', async (req,res)=>{
 		}
 
 		res.send(result); //send the result to the front end
-		mydb.close()//close connection to database
+		db.close()//close connection to database
 
 	}
 	catch (err){
 
+		console.log(err)
 		let result = {
 			registerSucceeded:0,
 			msg:"sorry, server error has occured"
@@ -103,7 +107,6 @@ app.post('/userlogin',async (req,res)=>{
 	try{
 		let result;
 		let submission = req.body;
-		let db = await sql.connect(dbconfig);
 		let query = await db.request()
 					.input('id',sql.Int,submission.userid)
 					.input('password',sql.VarChar,submission.password)
