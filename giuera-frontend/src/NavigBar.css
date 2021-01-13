@@ -3,8 +3,12 @@
 	height:60px;
 	width:100%;
 	display:flex;
+	flex-direction:right;
 	align-items:center;
+	background-color:black;
 }
+
+
 
 button{
 	background-color:rgb(255, 255, 255);
@@ -14,6 +18,5 @@ button{
 	padding:10px;
 	font-size:20px;
 	border-radius: 27px;
-	
 	border: none;
 }

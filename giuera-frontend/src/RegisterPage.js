@@ -57,6 +57,14 @@ class RegisterPage extends React.Component{
 		this.setState({email : event.target.value})
 	}
 
+	onPasswordChange=(event)=>{
+		this.setState({password : event.target.value})
+	}
+
+	onAddressChange=(event)=>{
+		this.setState({address : event.target.value})
+	}
+
 	onSelectMale=(event)=>{
 		this.setState({gender : '0'})
 	}
@@ -74,7 +82,7 @@ class RegisterPage extends React.Component{
 	}
 
 
-	registerResultMsg = () => { //shows user the sign up result
+	registerResultMsg = () => {
 
 		if (this.state.registerSucceeded=='0'){
 			return(
@@ -93,7 +101,7 @@ class RegisterPage extends React.Component{
 		}
 
 	}
-	onSubmit = (e) => { //executed when the sub
+	onSubmit = (e) => {
 		e.preventDefault()
 
 		let submission = {
@@ -104,7 +112,7 @@ class RegisterPage extends React.Component{
 			gender : this.state.gender ,
 			address : this.state.address ,
 			password : this.state.password 
-		} //create submission to send
+		}
 
 		this.sendSubmission(submission);
 
@@ -132,7 +140,7 @@ class RegisterPage extends React.Component{
 				</RadioContainer>	
 
 				<InputBox label="Address" type="text" onChange={this.onAddressChange}/>
-				<InputBox label="password" type="password" onChange={this.onAddressChange}/>
+				<InputBox label="password" type="password" onChange={this.onPasswordChange}/>
 				<button onClick={this.onSubmit}>sign up</button>
 				
 			

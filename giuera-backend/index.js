@@ -96,3 +96,56 @@ app.post('/userregister', async (req,res)=>{
 
 
 })
+
+
+
+app.post('/userlogin',async (req,res)=>{
+	try{
+		let result;
+		let submission = req.body;
+		let db = await sql.connect(dbconfig);
+		let query = await db.request()
+					.input('id',sql.Int,submission.userid)
+					.input('password',sql.VarChar,submission.password)
+					.output('type',sql.Int)
+					.output('success',sql.Bit)
+					.execute('userLogin')
+
+		console.log(query)
+
+		if (query.output.success==0){
+			
+				result = {
+					msg : "invalid id or password",
+					signedIn:'err',
+				}
+
+				res.send(result)
+				db.close()
+			
+		}
+
+		else {
+				result = {
+					signedIn:1,
+					signInAs:query.output.type,
+				}
+
+				res.send(result)
+				db.close()
+		}
+
+		console.log("RESULT:",result);
+
+	}
+	catch(err){
+
+				let result = {
+					msg : 'sorry, server error has occured',
+					signedIn:'err',
+				}
+
+		console.log(err)
+		db.close()
+	}
+})
