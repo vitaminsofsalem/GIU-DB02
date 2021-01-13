@@ -348,7 +348,7 @@ AS
 	address = ISNULL (@address, address)
 	WHERE Users.id = @id;
 GO
-exec editMyProfile  @id = 1, @address = 'dkdkdk'
+
 select * from Users
 --Procs from 14 to 28--	
 
