@@ -9,7 +9,7 @@ CREATE TABLE Users(
 	password VARCHAR(20),
 	gender BIT,
 	email VARCHAR(50) UNIQUE,
-	address VARCHAR(10),
+	address VARCHAR(30),
 );
 
 

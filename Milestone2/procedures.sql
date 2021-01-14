@@ -18,7 +18,7 @@ CREATE PROCEDURE instructorRegister
     @password VARCHAR (20),
     @email VARCHAR(50),
     @gender BIT,
-    @address VARCHAR (10)
+    @address VARCHAR (30)
 AS
 	INSERT INTO Users (firstName, lastName, gender, email, password, address)
 	VALUES (@first_name, @last_name, @gender, @email, @password, @address)
@@ -32,7 +32,7 @@ CREATE PROCEDURE adminRegister
     @password VARCHAR (20),
     @email VARCHAR(50),
     @gender BIT,
-    @address VARCHAR (10)
+    @address VARCHAR (30)
 AS
 	INSERT INTO Users (firstName, lastName, gender, email, password, address)
 	VALUES (@first_name, @last_name, @gender, @email, @password, @address)
@@ -332,12 +332,12 @@ GO
 
 CREATE PROC editMyProfile
 	@id INT,
-	@firstName VARCHAR(10) = NULL,
-	@lastName VARCHAR(10) = NULL,
-	@password VARCHAR(10) = NULL,
+	@firstName VARCHAR(20) = NULL,
+	@lastName VARCHAR(20) = NULL,
+	@password VARCHAR(20) = NULL,
 	@gender BIT = NULL, 
-	@email VARCHAR(10) = NULL,
-	@address VARCHAR(10) = NULL
+	@email VARCHAR(20) = NULL,
+	@address VARCHAR(30) = NULL
 AS
 	UPDATE Users SET
 	firstName = ISNULL (@firstName,firstName),
