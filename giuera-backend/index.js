@@ -547,14 +547,14 @@ app.post("/editprofile", async (req, res) => {
 
 app.get("/availablecourses", async (_, res) => {
 	try {
-		const dbReq = await database.request().execute("select * from COURSE ");
+		const dbReq = await database.request().query("select * from COURSE ");
 
 		console.log(dbReq);
 
 		res.status(200);
 		res.send({
 			msg: "success",
-			data: dbReq.recordset,
+			recordset: dbReq.recordset,
 		});
 	} catch (err) {
 		console.log(err);
