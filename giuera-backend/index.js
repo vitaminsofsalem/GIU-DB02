@@ -12,7 +12,7 @@ const dbconfig = {
 	database: "GIUERA",
 };
 
-let db;
+let database;
 const app = express();
 app.listen(3001);
 
@@ -20,22 +20,27 @@ app.use(cors());
 app.use(express.json());
 
 app.use(async (req, res, next) => {
-	db = await sql.connect(dbconfig);
+	database = await sql.connect(dbconfig);
 	next();
 });
 
 const getUserID = async (db, email) => {
 	//returns the ID of the user
 
-	let UserID, sqlres;
+	let UserID, query;
 	try {
 		sqlres = await db
 			.request()
 			.input("useremail", sql.VarChar, email)
 			.query(" SELECT id FROM Users WHERE email=@useremail ");
 
-		console.log("RESULT : ", sqlres);
-		UserID = sqlres.recordset[0].id; //get first result found in table
+		query = await db
+			.request()
+			.input("useremail", sql.VarChar, email)
+			.query(" SELECT id FROM Users WHERE email=@useremail ");
+
+		console.log("RESULT : ", query);
+		UserID = query.recordset[0].id; //get first result found in table
 		return UserID;
 	} catch (err) {
 		console.log(err);
@@ -43,6 +48,8 @@ const getUserID = async (db, email) => {
 };
 
 const signUpAs = (flag) => {
+	//specifies which register procedure to be executed
+
 	if (flag == "instructor") {
 		return "instructorRegister";
 	}
@@ -56,7 +63,7 @@ app.post("/userregister", async (req, res) => {
 		let userID;
 		let submission = req.body; //receives data sent by the request from front end
 
-		let dbres = await db
+		let query = await database
 			.request()
 			.input("first_name", sql.VarChar, submission.first_name)
 			.input("last_name", sql.VarChar, submission.last_name)
@@ -66,9 +73,9 @@ app.post("/userregister", async (req, res) => {
 			.input("address", sql.VarChar, submission.address)
 			.execute(signUpAs(submission.sign_up_as));
 
-		userID = await getUserID(db, submission.email); //get the id of the new user
+		userID = await getUserID(database, submission.email); //get the id of the new user
 
-		console.log(dbres);
+		console.log(query);
 
 		result = {
 			registerSucceeded: 1,
@@ -80,7 +87,9 @@ app.post("/userregister", async (req, res) => {
 		};
 
 		res.send(result); //send the result to the front end
-		db.close(); //close connection to database
+		database.close(); //close connection to database
+
+		res.send(result);
 	} catch (err) {
 		console.log(err);
 		let result = {

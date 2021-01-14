@@ -349,7 +349,6 @@ AS
 	WHERE Users.id = @id;
 GO
 
-select * from Users
 --Procs from 14 to 28--	
 
 CREATE PROC availablecourses
