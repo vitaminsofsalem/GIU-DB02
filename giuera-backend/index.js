@@ -77,11 +77,12 @@ app.post("/userregister", async (req, res) => {
 			registerSucceeded: 1,
 			msg:
 				"register as " +
-				submission.sign_up_as +
+				submission.signUpAs +
 				" was successful, your new ID : " +
 				userID, //send the id to the front end so the user knows his id
 		};
 
+		res.status(200);
 		res.send(result); //send the result to the front end
 		database.close(); //close connection to database
 
@@ -92,6 +93,7 @@ app.post("/userregister", async (req, res) => {
 			msg: "sorry, server error has occured",
 		};
 
+		res.status(500);
 		res.send(result);
 	}
 });
@@ -137,6 +139,7 @@ app.post("/userlogin", async (req, res) => {
 			signedIn: "err",
 		};
 
+		res.status(500);
 		res.send(result);
 
 		console.log(err);
