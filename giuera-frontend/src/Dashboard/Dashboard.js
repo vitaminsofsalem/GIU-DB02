@@ -113,42 +113,92 @@ class Dashboard extends React.Component{
 		
 		}
 
+	studentDashboard = ()=>{
+		return (
 
-	render(){
-		return(
+					<div style={DashboardStyles.bg}>
+						<h1 style={{color:'white'}}>
+							Welcome, {this.state.user.firstName}
+						</h1>
+						<CardsContainer>
+							<Card header="my courses">
+								<Scrollable>
+									{getCourses(courses)}
+								</Scrollable>
+							</Card>
 
-		 <div style={DashboardStyles.bg}>
-			 <h1 style={{color:'white'}}>
-				 Welcome, {this.state.user.firstName}
-			 </h1>
-			<CardsContainer>
-				<Card header="my courses">
-					<Scrollable>
-						{getCourses(courses)}
-					</Scrollable>
-				</Card>
+							<Card header="profile">
+								<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
+								<h2>instructor</h2>
+								<h2> ID : {this.state.user.id} </h2>
+								<h2> rating </h2>
+								<Button>edit</Button>
+							</Card>
 
-				<Card header="profile">
-					<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
-					<h2>{(this.state.user.type==2)? 'student':'instructor'}</h2>
-					<h2> ID : {this.state.user.id} </h2>
-					<Button>edit</Button>
-				</Card>
-
-				<Card header="assignments">
-					<h1>
-						hello world
-					</h1>
-					ay 7aga
-				</Card>
-
-
+							<Card header="assignments">
+								<h1>
+									hello world
+								</h1>
+								ay 7aga
+							</Card>
 
 
-			</CardsContainer>
-			
-			</div>
+
+
+						</CardsContainer>
+						
+						</div>
 		)
 	}
+
+	instructorDashboard = () =>{
+					return(
+
+					<div style={DashboardStyles.bg}>
+						<h1 style={{color:'white'}}>
+							Welcome, {this.state.user.firstName}
+						</h1>
+						<CardsContainer>
+							<Card header="my courses">
+								<Scrollable>
+									{getCourses(courses)}
+								</Scrollable>
+							</Card>
+
+							<Card header="profile">
+								<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
+								<h2>student</h2>
+								<h2> ID : {this.state.user.id} </h2>
+								<Button>edit</Button>
+							</Card>
+
+							<Card header="assignments">
+								<h1>
+									hello world
+								</h1>
+								ay 7aga
+							</Card>
+
+
+
+
+						</CardsContainer>
+						
+						</div>
+				)
+
+	}
+	render(){
+			if (this.state.user.id==1){
+
+				return this.studentDashboard()
+		}
+
+		return	this.instructorDashboard()
+		
+		
+
+		
+		}
 }
 export default Dashboard

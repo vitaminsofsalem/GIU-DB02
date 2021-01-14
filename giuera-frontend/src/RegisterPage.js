@@ -46,6 +46,8 @@ class RegisterPage extends React.Component{
 
 	}
 
+	
+
 	onFirstNameChange=(event)=>{
 		this.setState({firstName : event.target.value})
 	}
@@ -106,7 +108,7 @@ class RegisterPage extends React.Component{
 		e.preventDefault()
 
 		let submission = {
-			firstName : this.state.firtstName ,
+			firstName : this.state.firstName ,
 			lastName : this.state.lastName ,
 			signUpAs : this.state.signUpAs,
 			email : this.state.email ,

@@ -58,7 +58,6 @@ app.post("/userregister", async (req, res) => {
 		let userID;
 		let submission = req.body //receives data sent by the request from front end
 
-
 		let query = await database.request() 
 			.input('first_name',sql.VarChar,submission.firstName)
 			.input('last_name',sql.VarChar,submission.lastName)
