@@ -43,14 +43,83 @@ class Dashboard extends React.Component{
 
 	constructor(props){
 		super(props)
+		this.state = {user:{}};
 	}
+
+	componentDidMount = async()=>{
+		console.log(this.props.user)
+
+		if (this.props.user.type==1){
+
+			const sub = {
+				instructorid : this.props.user.id
+			}
+
+			const request = {          
+			method : 'POST',  
+			headers : {'Content-Type' : 'application/json'},
+			body : JSON.stringify(sub),
+			}
+
+			let response = await fetch('http://localhost:3001/instructorprofile',request) 
+			let data = await response.json();
+			console.log()
+				this.setState({
+					user : {
+						id:this.props.user.id,
+						firstName : data.firstName ,
+						lastName : data.lastName ,
+						gender : data.gender ,
+						email : data.email ,
+						address : data.address ,
+						rating : data.rating ,
+					}
+				})
+			
+		} 
+
+		else if (this.props.user.type==2){
+
+			const sub = {
+				studentid : this.props.user.id
+			}
+
+			const request = {          
+			method : 'POST',  
+			headers : {'Content-Type' : 'application/json'},
+			body : JSON.stringify(sub),
+			}
+
+			let response = await fetch('http://localhost:3001/studentprofile',request) 
+			let data = await response.json();
+
+				this.setState({
+					user : {
+						id:this.props.user.id,
+						gpa : data.gpa ,
+						firstName : data.firstName ,
+						lastName : data.lastName ,
+						gender : data.gender ,
+						email : data.email ,
+						address : data.address ,
+					}
+				})
+						
+		} 
+		
+		
+
+
+		
+		}
+
 
 	render(){
 		return(
 
 		 <div style={DashboardStyles.bg}>
 			 <h1 style={{color:'white'}}>
-				 userid : {this.props.user.id} {((this.props.user.type==2)? 'student':'instructor')}
+				 Welcome, {this.state.user.firstName}
 			 </h1>
 			<CardsContainer>
 				<Card header="my courses">
@@ -60,8 +129,9 @@ class Dashboard extends React.Component{
 				</Card>
 
 				<Card header="profile">
-					<h2>Ibrahim Ahmed</h2>
-					<h2> ID : 100-1234 </h2>
+					<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
+					<h2>{(this.state.user.type==2)? 'student':'instructor'}</h2>
+					<h2> ID : {this.state.user.id} </h2>
 					<Button>edit</Button>
 				</Card>
 

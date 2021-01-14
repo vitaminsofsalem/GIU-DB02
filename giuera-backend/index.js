@@ -277,7 +277,7 @@ app.post("/addinstructorcourse", async (req, res) => {
 	}
 });
 
-app.get("/viewacceptedcourses", async (req, res) => {
+app.post("/viewacceptedcourses", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -358,7 +358,7 @@ app.post("/defineassignment", async (req, res) => {
 	}
 });
 
-app.get("/instructorprofile", async (req, res) => {
+app.post("/instructorprofile", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -383,7 +383,7 @@ app.get("/instructorprofile", async (req, res) => {
 	}
 });
 
-app.get("/viewstudentassignments", async (req, res) => {
+app.post("/viewstudentassignments", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -438,7 +438,7 @@ app.post("/gradeassignment", async (req, res) => {
 	}
 });
 
-app.get("/viewstudentfeedback", async (req, res) => {
+app.post("/viewstudentfeedback", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -491,7 +491,7 @@ app.post("/issuecertificate", async (req, res) => {
 	}
 });
 
-app.get("/studentprofile", async (req, res) => {
+app.post("/studentprofile", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -567,7 +567,7 @@ app.get("/availablecourses", async (_, res) => {
 	}
 });
 
-app.get("/courseinformation", async (_, res) => {
+app.post("/courseinformation", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -592,7 +592,7 @@ app.get("/courseinformation", async (_, res) => {
 	}
 });
 
-app.post("/enrollincourse", async (_, res) => {
+app.post("/enrollincourse", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -618,7 +618,7 @@ app.post("/enrollincourse", async (_, res) => {
 	}
 });
 
-app.post("/addcreditcard", async (_, res) => {
+app.post("/addcreditcard", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -646,7 +646,7 @@ app.post("/addcreditcard", async (_, res) => {
 	}
 });
 
-app.get("/viewpromo", async (req, res) => {
+app.post("/viewpromo", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -696,7 +696,7 @@ app.post("/paycourse", async (req, res) => {
 	}
 });
 
-app.get("/enrollincourseview", async (req, res) => {
+app.post("/enrollincourseview", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -722,7 +722,7 @@ app.get("/enrollincourseview", async (req, res) => {
 	}
 });
 
-app.get("/viewassignments", async (req, res) => {
+app.post("/viewassignments", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -775,7 +775,7 @@ app.post("/submitassign", async (req, res) => {
 	}
 });
 
-app.get("/viewassigngrade", async (req, res) => {
+app.post("/viewassigngrade", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -803,7 +803,7 @@ app.get("/viewassigngrade", async (req, res) => {
 	}
 });
 
-app.get("/viewfinalgrade", async (req, res) => {
+app.post("/viewfinalgrade", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
@@ -881,7 +881,7 @@ app.post("/rateinstructor", async (req, res) => {
 	}
 });
 
-app.get("/viewcertificate", async (req, res) => {
+app.post("/viewcertificate", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
