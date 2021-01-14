@@ -29,11 +29,6 @@ const getUserID = async (db, email) => {
 
 	let UserID, query;
 	try {
-		sqlres = await db
-			.request()
-			.input("useremail", sql.VarChar, email)
-			.query(" SELECT id FROM Users WHERE email=@useremail ");
-
 		query = await db
 			.request()
 			.input("useremail", sql.VarChar, email)
@@ -88,8 +83,6 @@ app.post("/userregister", async (req, res) => {
 
 		res.send(result); //send the result to the front end
 		database.close(); //close connection to database
-
-		res.send(result);
 	} catch (err) {
 		console.log(err);
 		let result = {
@@ -104,11 +97,11 @@ app.post("/userregister", async (req, res) => {
 app.post("/userlogin", async (req, res) => {
 	try {
 		let result;
-		let submission = req.body;
-		let query = await db
-			.request()
-			.input("id", sql.Int, submission.userid)
-			.input("password", sql.VarChar, submission.password)
+		let submission = req.body; //get request body from front end client
+		let query = await database
+			.request() //start querying
+			.input("id", sql.Int, submission.userid) //specify userid (recieved from front end) as input
+			.input("password", sql.VarChar, submission.password) //specify password (recieved from front end) as input
 			.output("type", sql.Int)
 			.output("success", sql.Bit)
 			.execute("userLogin");
@@ -116,13 +109,15 @@ app.post("/userlogin", async (req, res) => {
 		console.log(query);
 
 		if (query.output.success == 0) {
+			//if login fails
+
 			result = {
 				msg: "invalid id or password",
 				signedIn: "err",
 			};
 
 			res.send(result);
-			db.close();
+			database.close();
 		} else {
 			result = {
 				signedIn: 1,
@@ -130,7 +125,7 @@ app.post("/userlogin", async (req, res) => {
 			};
 
 			res.send(result);
-			db.close();
+			database.close();
 		}
 
 		console.log("RESULT:", result);
@@ -140,15 +135,16 @@ app.post("/userlogin", async (req, res) => {
 			signedIn: "err",
 		};
 
+		res.send(result);
+
 		console.log(err);
-		db.close();
+		database.close();
 	}
 });
-
 app.post("/addmobile", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("id", sql.Int, reqBody.userid)
 			.input("mobile_number", sql.VarChar, reqBody.mobile_number)
@@ -173,7 +169,7 @@ app.post("/addmobile", async (req, res) => {
 app.post("/addcourse", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("creditHours", sql.Int, reqBody.credit_hours)
 			.input("name", sql.VarChar, reqBody.name)
@@ -201,7 +197,7 @@ app.post("/addcourse", async (req, res) => {
 app.post("/updatecoursecontent", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instrId", sql.Int, reqBody.instructorid)
 			.input("courseId", sql.VarChar, reqBody.courseid)
@@ -227,7 +223,7 @@ app.post("/updatecoursecontent", async (req, res) => {
 app.post("/updatecoursedescription", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instrId", sql.Int, reqBody.instructorid)
 			.input("courseId", sql.Int, reqBody.courseid)
@@ -253,7 +249,7 @@ app.post("/updatecoursedescription", async (req, res) => {
 app.post("/addinstructorcourse", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instId", sql.Int, reqBody.instructorid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -279,7 +275,7 @@ app.post("/addinstructorcourse", async (req, res) => {
 app.get("/viewacceptedcourses", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instrId", sql.Int, reqBody.instructorid)
 			.execute("InstructorViewAcceptedCoursesByAdmin");
@@ -304,7 +300,7 @@ app.get("/viewacceptedcourses", async (req, res) => {
 app.post("/definecoursepreq", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("prerequsiteId", sql.Int, reqBody.prerequsite_cid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -329,7 +325,7 @@ app.post("/definecoursepreq", async (req, res) => {
 app.post("/defineassignment", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instId", sql.Int, reqBody.instructorid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -360,7 +356,7 @@ app.post("/defineassignment", async (req, res) => {
 app.get("/instructorprofile", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instId", sql.Int, reqBody.instructorid)
 			.execute("ViewInstructorProfile");
@@ -385,7 +381,7 @@ app.get("/instructorprofile", async (req, res) => {
 app.get("/viewstudentassignments", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instId", sql.Int, reqBody.instructorid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -411,7 +407,7 @@ app.get("/viewstudentassignments", async (req, res) => {
 app.post("/gradeassignment", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instrId", sql.Int, reqBody.instructorid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -440,7 +436,7 @@ app.post("/gradeassignment", async (req, res) => {
 app.get("/viewstudentfeedback", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instrId", sql.Int, reqBody.instructorid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -466,7 +462,7 @@ app.get("/viewstudentfeedback", async (req, res) => {
 app.post("/issuecertificate", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("instID", sql.Int, reqBody.instructorid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -493,7 +489,7 @@ app.post("/issuecertificate", async (req, res) => {
 app.get("/studentprofile", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("id", sql.Int, reqBody.studentid)
 			.execute("viewMyProfile");
@@ -518,7 +514,7 @@ app.get("/studentprofile", async (req, res) => {
 app.post("/editstudentprofile", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("id", sql.Int, reqBody.studentid)
 			.input("firstName", sql.VarChar, reqBody.first_name)
@@ -547,7 +543,7 @@ app.post("/editstudentprofile", async (req, res) => {
 
 app.get("/availablecourses", async (_, res) => {
 	try {
-		const dbReq = await db.request().execute("availablecourses");
+		const dbReq = await database.request().execute("availablecourses");
 
 		console.log(dbReq);
 
@@ -569,7 +565,7 @@ app.get("/availablecourses", async (_, res) => {
 app.get("/courseinformation", async (_, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("id", sql.Int, reqBody.courseid)
 			.execute("courseInformation");
@@ -594,7 +590,7 @@ app.get("/courseinformation", async (_, res) => {
 app.post("/enrollincourse", async (_, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("cid", sql.Int, reqBody.courseid)
 			.input("sid", sql.Int, reqBody.studentid)
@@ -620,7 +616,7 @@ app.post("/enrollincourse", async (_, res) => {
 app.post("/addcreditcard", async (_, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("number", sql.VarChar, reqBody.number)
 			.input("sid", sql.Int, reqBody.studentid)
@@ -648,7 +644,7 @@ app.post("/addcreditcard", async (_, res) => {
 app.get("/viewpromo", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.execute("viewPromocode");
@@ -673,7 +669,7 @@ app.get("/viewpromo", async (req, res) => {
 app.post("/paycourse", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -698,7 +694,7 @@ app.post("/paycourse", async (req, res) => {
 app.get("/enrollincourseview", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("id", sql.Int, reqBody.courseid)
@@ -724,7 +720,7 @@ app.get("/enrollincourseview", async (req, res) => {
 app.get("/viewassignments", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -750,7 +746,7 @@ app.get("/viewassignments", async (req, res) => {
 app.post("/submitassign", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -777,7 +773,7 @@ app.post("/submitassign", async (req, res) => {
 app.get("/viewassigngrade", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -805,7 +801,7 @@ app.get("/viewassigngrade", async (req, res) => {
 app.get("/viewfinalgrade", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -831,7 +827,7 @@ app.get("/viewfinalgrade", async (req, res) => {
 app.post("/addfeedback", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("cid", sql.Int, reqBody.courseid)
@@ -857,7 +853,7 @@ app.post("/addfeedback", async (req, res) => {
 app.post("/rateinstructor", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("instId", sql.Int, reqBody.instructorid)
@@ -883,7 +879,7 @@ app.post("/rateinstructor", async (req, res) => {
 app.get("/viewcertificate", async (req, res) => {
 	try {
 		const reqBody = req.body;
-		const dbReq = await db
+		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
 			.input("cid", sql.Int, reqBody.courseid)
