@@ -6,8 +6,7 @@ import Card from './Card'
 import Button from './Button'
 import InfoBox from './InfoBox'
 import Scrollable from './Scrollable'
-
-
+import InputBox from './../Form/InputBox'
 
 
 class Dashboard extends React.Component{
@@ -15,10 +14,14 @@ class Dashboard extends React.Component{
 	constructor(props){
 		super(props)
 		this.state = {
+			profileEdit:0,
 			user:{},
 			courses:[],
 		};
 	}
+	// fetchCoursesToBuy = () => {
+
+	// }
 
 	fetchStudentCourses = async () => {
 
@@ -42,6 +45,12 @@ class Dashboard extends React.Component{
 		} 
 
 	
+	toggleProfileEdit=()=>{
+		console.log(this.state.profileEdit)
+		this.setState({
+			profileEdit:!this.state.profileEdit	
+		})
+	}
 
 	componentDidMount = async()=>{
 		console.log(this.props.user)
@@ -123,6 +132,32 @@ class Dashboard extends React.Component{
 			))
 	}
 
+	profileView = () =>{
+				return (
+					<>
+					<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
+					<h2>{(this.props.user.id==2)? 'student':'instructor'}</h2>
+					<h2> ID : {this.state.user.id} </h2>
+					<h2> rating </h2>
+					<Button onClick={this.toggleProfileEdit}>edit</Button>
+					</>
+				)
+	}
+
+
+	profileEdit = () =>{
+				return (
+					<Scrollable>
+						
+						<InputBox label="first name" type="text" onChange={this.onFirstNameChange}/>
+						<InputBox label="last name" type="text" onChange={this.onLastNameChange}/>
+						<InputBox label="email" type="text" onChange={this.onEmailChange}/>
+						
+					<Button onClick={this.toggleProfileEdit}>save</Button>
+					</Scrollable>
+				)
+	}
+	
 	instructorDashboard = ()=>{
 		return (
 
@@ -137,11 +172,6 @@ class Dashboard extends React.Component{
 							</Card>
 
 							<Card header="profile">
-								<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
-								<h2>instructor</h2>
-								<h2> ID : {this.state.user.id} </h2>
-								<h2> rating </h2>
-								<Button>edit</Button>
 							</Card>
 
 							<Card header="payment settings">
@@ -171,10 +201,7 @@ class Dashboard extends React.Component{
 							</Card>
 
 							<Card header="profile">
-								<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
-								<h2>student</h2>
-								<h2> ID : {this.state.user.id} </h2>
-								<Button>edit</Button>
+								{(this.state.profileEdit)? this.profileEdit():this.profileView() }
 							</Card>
 
 							<Card header="assignments">
@@ -182,6 +209,10 @@ class Dashboard extends React.Component{
 									hello world
 								</h1>
 								ay 7aga
+							</Card>
+
+							<Card header="available courses">
+
 							</Card>
 
 
@@ -195,7 +226,7 @@ class Dashboard extends React.Component{
 	}
 
 	render(){
-			if (this.state.user.id==1){
+			if (this.state.user.type==1){
 				return this.instructorDashboard()
 			}
 
