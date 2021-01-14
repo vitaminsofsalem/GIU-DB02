@@ -10,7 +10,7 @@ const dbconfig = { //config for connecting to our mssql server
     database: 'GIUERA',
 }
 
-let db;
+let database;
 const app = express()
 app.listen(3001)
 
@@ -18,22 +18,22 @@ app.use(cors())
 app.use(express.json())
 
 app.use(async (req,res,next)=>{
-	db=await sql.connect(dbconfig)
+	database=await sql.connect(dbconfig)
 	next()
 })
 
 
 const getUserID = async (db,email) =>{ //returns the ID of the user
 
-	let UserID,sqlres;
+	let UserID,query;
 	try {
 
-		sqlres = await db.request()
+		query = await db.request()
 			.input('useremail',sql.VarChar,email)
 			.query(' SELECT id FROM Users WHERE email=@useremail ')
 
-		console.log("RESULT : ",sqlres)
-		UserID = sqlres.recordset[0].id; //get first result found in table
+		console.log("RESULT : ",query)
+		UserID = query.recordset[0].id; //get first result found in table
 		return UserID;
 
 	}
@@ -43,7 +43,7 @@ const getUserID = async (db,email) =>{ //returns the ID of the user
 
 }
 
-const signUpAs = (flag) => {
+const signUpAs = (flag) => { //specifies which register procedure to be executed
 
 	if (flag=='instructor'){
 		return 'instructorRegister'
@@ -61,7 +61,7 @@ app.post('/userregister', async (req,res)=>{
 		let submission = req.body //receives data sent by the request from front end
 
 
-		let dbres = await db.request() 
+		let query = await database.request() 
 			.input('first_name',sql.VarChar,submission.first_name)
 			.input('last_name',sql.VarChar,submission.last_name)
 			.input('password',sql.VarChar,submission.password)
@@ -72,9 +72,9 @@ app.post('/userregister', async (req,res)=>{
 				
 
 		
-		userID = await getUserID(db,submission.email); //get the id of the new user
+		userID = await getUserID(database,submission.email); //get the id of the new user
 
-		console.log(dbres);
+		console.log(query);
 
 		result = {
 			registerSucceeded:1,  
@@ -82,7 +82,7 @@ app.post('/userregister', async (req,res)=>{
 		}
 
 		res.send(result); //send the result to the front end
-		db.close()//close connection to database
+		database.close()//close connection to database
 
 	}
 	catch (err){
@@ -102,21 +102,22 @@ app.post('/userregister', async (req,res)=>{
 })
 
 
+//request for logging in
 
 app.post('/userlogin',async (req,res)=>{
 	try{
-		let result;
-		let submission = req.body;
-		let query = await db.request()
-					.input('id',sql.Int,submission.userid)
-					.input('password',sql.VarChar,submission.password)
-					.output('type',sql.Int)
+		let result; 
+		let submission = req.body; //get request body from front end client
+		let query = await database.request() //start querying
+					.input('id',sql.Int,submission.userid) //specify userid (recieved from front end) as input 
+					.input('password',sql.VarChar,submission.password) //specify password (recieved from front end) as input 
+					.output('type',sql.Int) 
 					.output('success',sql.Bit)
 					.execute('userLogin')
 
 		console.log(query)
 
-		if (query.output.success==0){
+		if (query.output.success==0){ //if login fails
 			
 				result = {
 					msg : "invalid id or password",
@@ -124,7 +125,7 @@ app.post('/userlogin',async (req,res)=>{
 				}
 
 				res.send(result)
-				db.close()
+				database.close()
 			
 		}
 
@@ -135,7 +136,7 @@ app.post('/userlogin',async (req,res)=>{
 				}
 
 				res.send(result)
-				db.close()
+				database.close()
 		}
 
 		console.log("RESULT:",result);
@@ -143,12 +144,14 @@ app.post('/userlogin',async (req,res)=>{
 	}
 	catch(err){
 
-				let result = {
-					msg : 'sorry, server error has occured',
-					signedIn:'err',
-				}
+		let result = {
+			msg : 'sorry, server error has occured',
+			signedIn:'err',
+		}
+
+		res.send(result)
 
 		console.log(err)
-		db.close()
+		database.close()
 	}
 })
