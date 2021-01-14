@@ -12,13 +12,13 @@ class RegisterPage extends React.Component{
 	constructor(props){
 		super(props)
 		this.state = {      
-			first_name:'',
-			last_name:'',
+			firstName:'',
+			lastName:'',
 			email:'',
 			gender:'u',
 			address:'',
 			password:'',
-			sign_up_as:'u',
+			signUpAs:'u',
 			registerSucceeded:'',
 			msg:''
 		}
@@ -47,11 +47,11 @@ class RegisterPage extends React.Component{
 	}
 
 	onFirstNameChange=(event)=>{
-		this.setState({first_name : event.target.value})
+		this.setState({firstName : event.target.value})
 	}
 
 	onLastNameChange=(event)=>{
-		this.setState({last_name : event.target.value})
+		this.setState({lastName : event.target.value})
 	}
 
 	onEmailChange=(event)=>{
@@ -75,11 +75,11 @@ class RegisterPage extends React.Component{
 	}
 
 	onSelectAsStudent=(event)=>{
-		this.setState({sign_up_as : 'student'})
+		this.setState({signUpAs : 'student'})
 	}
 
 	onSelectAsInstructor=(event)=>{
-		this.setState({sign_up_as : 'instructor'})
+		this.setState({signUpAs : 'instructor'})
 	}
 
 
@@ -106,9 +106,9 @@ class RegisterPage extends React.Component{
 		e.preventDefault()
 
 		let submission = {
-			first_name : this.state.first_name ,
-			last_name : this.state.last_name ,
-			sign_up_as : this.state.sign_up_as,
+			firstName : this.state.firtstName ,
+			lastName : this.state.lastName ,
+			signUpAs : this.state.signUpAs,
 			email : this.state.email ,
 			gender : this.state.gender ,
 			address : this.state.address ,

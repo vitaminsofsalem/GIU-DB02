@@ -62,13 +62,13 @@ app.post('/userregister', async (req,res)=>{
 
 
 		let query = await database.request() 
-			.input('first_name',sql.VarChar,submission.first_name)
-			.input('last_name',sql.VarChar,submission.last_name)
+			.input('first_name',sql.VarChar,submission.firstName)
+			.input('last_name',sql.VarChar,submission.lastName)
 			.input('password',sql.VarChar,submission.password)
 			.input('email',sql.VarChar,submission.email)
 			.input('gender',sql.Bit,submission.gender)
 			.input('address',sql.VarChar,submission.address)
-			.execute(signUpAs(submission.sign_up_as));
+			.execute(signUpAs(submission.signUpAs));
 				
 
 		
@@ -78,7 +78,7 @@ app.post('/userregister', async (req,res)=>{
 
 		result = {
 			registerSucceeded:1,  
-			msg:'register as ' + submission.sign_up_as + ' was successful, your new ID : ' + userID //send the id to the front end so the user knows his id
+			msg:'register as ' + submission.signUpAs + ' was successful, your new ID : ' + userID //send the id to the front end so the user knows his id
 		}
 
 		res.send(result); //send the result to the front end
@@ -155,3 +155,43 @@ app.post('/userlogin',async (req,res)=>{
 		database.close()
 	}
 })
+
+
+
+
+//request profile information
+
+// app.get('/getUserProfile', async (req,res)=>{
+// 	try {
+// 		let result;
+// 		let submission = req.body;
+// 		let query;
+
+// 		if (submission.type==2) {//if the account belong to a student
+			
+// 			query = database.request()
+// 				.input('id',sql.Int,submission.id)
+// 				.execute('ViewInstructorProfile')
+
+			
+// 		}
+
+// 		else if (submission.type==1){
+
+// 			query = database.request()
+// 				.input('id',sql.Int,submission.id)
+// 				.execute('ViewMyProfile')
+// 		}
+
+
+		
+		
+// 	}
+// 	catch (err){
+
+// 		res.sendStatus(500)
+// 		console.log(err)
+// 		database.close()
+
+// 	}	
+// })
