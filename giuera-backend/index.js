@@ -547,7 +547,7 @@ app.post("/editstudentprofile", async (req, res) => {
 
 app.get("/availablecourses", async (_, res) => {
 	try {
-		const dbReq = await database.request().execute("availablecourses");
+		const dbReq = await database.request().execute("select * from COURSE ");
 
 		console.log(dbReq);
 
@@ -555,6 +555,33 @@ app.get("/availablecourses", async (_, res) => {
 		res.send({
 			msg: "success",
 			data: dbReq.recordset,
+		});
+	} catch (err) {
+		console.log(err);
+		const result = {
+			msg: SERVER_ERROR,
+		};
+		res.status(500);
+		res.send(result);
+	}
+});
+
+
+
+app.post("/viewenrolled", async (req, res) => {
+	try {
+		const reqBody = req.body;
+		const dbReq = await database
+			.request()
+			.input("sid", sql.Int, reqBody.studentid)
+			.query('SELECT * FROM Course a  LEFT JOIN StudentTakeCourse b on a.id=b.cid WHERE @sid=sid')
+
+		console.log(dbReq);
+
+		res.status(200);
+		res.send({
+			msg: "success",
+			courses : dbReq.recordset,
 		});
 	} catch (err) {
 		console.log(err);

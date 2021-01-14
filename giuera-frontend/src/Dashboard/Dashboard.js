@@ -6,51 +6,47 @@ import Card from './Card'
 import Button from './Button'
 import InfoBox from './InfoBox'
 import Scrollable from './Scrollable'
-let courses=[
-	{
-		name:"CSEN202",
-		ch:"6"
-	},
-	{
-		name:"AS",
-		ch:"3"
-	},
-	{
-		name:"MATH103",
-		ch:"6"
-	},
-	{
-		name:"PHYS101",
-		ch:"5"
-	},
-	{
-		name:"CHEM101",
-		ch:"5"
-	},
-]
 
-const getCourses = (courseList) => (
-		courseList.map(course => (
-			<InfoBox header={course.name} sub={"credit hours : " + course.ch}>
-			<Button>view</Button>
-			</InfoBox>
-		)
-	)
-)
+
 
 
 class Dashboard extends React.Component{
 
 	constructor(props){
 		super(props)
-		this.state = {user:{}};
+		this.state = {
+			user:{},
+			courses:[],
+		};
 	}
+
+	fetchStudentCourses = async () => {
+
+			const sub = {
+				studentid : this.props.user.id
+			}
+
+			const request = {          
+			method : 'POST',  
+			headers : {'Content-Type' : 'application/json'},
+			body : JSON.stringify(sub),
+			}
+
+			let response = await fetch('http://localhost:3001/viewenrolled',request) 
+			let data = await response.json();
+
+				this.setState({
+					courses:data.courses
+				})
+						
+		} 
+
+	
 
 	componentDidMount = async()=>{
 		console.log(this.props.user)
 
 		if (this.props.user.type==1){
-
 			const sub = {
 				instructorid : this.props.user.id
 			}
@@ -65,6 +61,8 @@ class Dashboard extends React.Component{
 			let data = await response.json();
 			console.log()
 				this.setState({
+					flag:'',
+					courses:[],
 					user : {
 						id:this.props.user.id,
 						firstName : data.firstName ,
@@ -79,6 +77,8 @@ class Dashboard extends React.Component{
 		} 
 
 		else if (this.props.user.type==2){
+
+			this.fetchStudentCourses()	
 
 			const sub = {
 				studentid : this.props.user.id
@@ -113,7 +113,17 @@ class Dashboard extends React.Component{
 		
 		}
 
-	studentDashboard = ()=>{
+
+	viewCourses = () => {
+		console.log('test tegrege : ',this.state.courses)
+			return this.state.courses.map(course=>(
+				<InfoBox key={course.cid} header={course.name} sub={"credit hours:" + course.creditHours}>
+				<Button>view</Button>	
+				</InfoBox>
+			))
+	}
+
+	instructorDashboard = ()=>{
 		return (
 
 					<div style={DashboardStyles.bg}>
@@ -123,7 +133,6 @@ class Dashboard extends React.Component{
 						<CardsContainer>
 							<Card header="my courses">
 								<Scrollable>
-									{getCourses(courses)}
 								</Scrollable>
 							</Card>
 
@@ -135,11 +144,7 @@ class Dashboard extends React.Component{
 								<Button>edit</Button>
 							</Card>
 
-							<Card header="assignments">
-								<h1>
-									hello world
-								</h1>
-								ay 7aga
+							<Card header="payment settings">
 							</Card>
 
 
@@ -151,7 +156,7 @@ class Dashboard extends React.Component{
 		)
 	}
 
-	instructorDashboard = () =>{
+	studentDashboard = () =>{
 					return(
 
 					<div style={DashboardStyles.bg}>
@@ -161,7 +166,7 @@ class Dashboard extends React.Component{
 						<CardsContainer>
 							<Card header="my courses">
 								<Scrollable>
-									{getCourses(courses)}
+									{this.viewCourses()}
 								</Scrollable>
 							</Card>
 
@@ -188,17 +193,19 @@ class Dashboard extends React.Component{
 				)
 
 	}
+
 	render(){
 			if (this.state.user.id==1){
+				return this.instructorDashboard()
+			}
 
-				return this.studentDashboard()
-		}
-
-		return	this.instructorDashboard()
+		return	this.studentDashboard()
 		
 		
 
 		
-		}
+	}
+
 }
+
 export default Dashboard
