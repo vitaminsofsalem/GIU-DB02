@@ -64,6 +64,7 @@ class Dashboard extends React.Component{
 			changeProfile : async () =>{
 
 
+				this.profileEditFuncs.toggleProfileEdit()
 				const sub = {
 					userid : this.props.user.id,
 					...this.state.newProfile
@@ -88,9 +89,6 @@ class Dashboard extends React.Component{
 			toggleProfileEdit:()=>{
 					console.log(this.state.profileEditFlag)
 
-					if (this.state.profileEditFlag==1){
-						this.profileEditFuncs.changeProfile()
-					}		
 					this.setState({
 						profileEditFlag:!this.state.profileEditFlag	
 					})
@@ -196,7 +194,6 @@ class Dashboard extends React.Component{
 
 
 	viewCourses = () => {
-		console.log('test tegrege : ',this.state.courses)
 			return this.state.courses.map(course=>(
 				<InfoBox key={course.cid} header={course.name} sub={"credit hours:" + course.creditHours}>
 				<Button>view</Button>	
@@ -208,9 +205,9 @@ class Dashboard extends React.Component{
 				return (
 					<>
 					<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
-					<h2>{(this.props.user.id==2)? 'student':'instructor'}</h2>
+					<h2>{(this.props.user.type==2)? 'student':'instructor'}</h2>
 					<h2> ID : {this.state.user.id} </h2>
-					<h2> rating </h2>
+					<h2> {(this.props.user.type==2)? ('GPA : ' + this.state.user.gpa):('rating : ' + (this.state.user.rating))}</h2>
 					<Button onClick={this.profileEditFuncs.toggleProfileEdit}>edit</Button>
 					</>
 				)
@@ -233,7 +230,8 @@ class Dashboard extends React.Component{
 						<InputBox label="Address" type="text" onChange={this.profileEditFuncs.onAddressChange}/>
 						<InputBox label="password" type="password" onChange={this.profileEditFuncs.onPasswordChange}/>
 
-						<Button onClick={this.profileEditFuncs.toggleProfileEdit}>save</Button>
+						<Button onClick={this.profileEditFuncs.changeProfile}>save</Button>
+						<Button onClick={this.profileEditFuncs.toggleProfileEdit}>cancel</Button>
 					</Scrollable>
 				)
 	}
