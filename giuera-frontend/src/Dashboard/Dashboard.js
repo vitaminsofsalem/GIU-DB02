@@ -7,22 +7,101 @@ import Button from './Button'
 import InfoBox from './InfoBox'
 import Scrollable from './Scrollable'
 import InputBox from './../Form/InputBox'
-
+import RadioContainer from './../Form/RadioContainer'
+import RadioButton from './../Form/RadioButton'
 
 class Dashboard extends React.Component{
 
 	constructor(props){
 		super(props)
 		this.state = {
-			profileEdit:0,
+			profileEditFlag:0,
+
+			newProfile:{
+				firstName:'',
+				lastName:'',
+				email:'',
+				password:'',
+				address:'',
+				gender:'',
+
+			},
+
 			user:{},
 			courses:[],
 		};
+
+		this.profileEditFuncs = {
+
+			onFirstNameChange:(event)=>{
+				console.log(this.state);
+				this.setState(()=>{this.state.newProfile.firstName = event.target.value})
+			},
+
+			onLastNameChange:(event)=>{
+				this.setState(()=>{this.state.newProfile.lastName = event.target.value})
+			},
+
+			onEmailChange:(event)=>{
+				this.setState(()=>{this.state.newProfile.email = event.target.value})
+			},
+
+			onPasswordChange:(event)=>{
+				this.setState(()=>{this.state.newProfile.password = event.target.value})
+			},
+
+			onAddressChange:(event)=>{
+				this.setState(()=>{this.state.newProfile.address = event.target.value})
+			},
+
+			onSelectMale:(event)=>{
+				this.setState(()=>{this.state.newProfile.gender = 0})
+			},
+
+			onSelectFemale:(event)=>{
+				this.setState(()=>{this.state.newProfile.gender = 1})
+			},
+			changeProfile : async () =>{
+
+
+				const sub = {
+					userid : this.props.user.id,
+					...this.state.newProfile
+				}
+
+				console.log(sub)
+
+				const request = {          
+				method : 'POST',  
+				headers : {'Content-Type' : 'application/json'},
+				body : JSON.stringify(sub),
+				}
+
+				let response = await fetch('http://localhost:3001/editprofile',request) 
+				//let data = await response.json();
+				this.loadProfile()
+
+				
+
+			},
+
+			toggleProfileEdit:()=>{
+					console.log(this.state.profileEditFlag)
+
+					if (this.state.profileEditFlag==1){
+						this.profileEditFuncs.changeProfile()
+					}		
+					this.setState({
+						profileEditFlag:!this.state.profileEditFlag	
+					})
+			}
+
+		}
 	}
 	// fetchCoursesToBuy = () => {
 
 	// }
-
+	
 	fetchStudentCourses = async () => {
 
 			const sub = {
@@ -45,15 +124,8 @@ class Dashboard extends React.Component{
 		} 
 
 	
-	toggleProfileEdit=()=>{
-		console.log(this.state.profileEdit)
-		this.setState({
-			profileEdit:!this.state.profileEdit	
-		})
-	}
-
-	componentDidMount = async()=>{
-		console.log(this.props.user)
+	
+	loadProfile = async () => {
 
 		if (this.props.user.type==1){
 			const sub = {
@@ -115,12 +187,12 @@ class Dashboard extends React.Component{
 				})
 						
 		} 
-		
-		
 
+	}
 
-		
-		}
+	componentDidMount = async()=>{
+		await this.loadProfile()	
+	}
 
 
 	viewCourses = () => {
@@ -139,7 +211,7 @@ class Dashboard extends React.Component{
 					<h2>{(this.props.user.id==2)? 'student':'instructor'}</h2>
 					<h2> ID : {this.state.user.id} </h2>
 					<h2> rating </h2>
-					<Button onClick={this.toggleProfileEdit}>edit</Button>
+					<Button onClick={this.profileEditFuncs.toggleProfileEdit}>edit</Button>
 					</>
 				)
 	}
@@ -149,11 +221,19 @@ class Dashboard extends React.Component{
 				return (
 					<Scrollable>
 						
-						<InputBox label="first name" type="text" onChange={this.onFirstNameChange}/>
-						<InputBox label="last name" type="text" onChange={this.onLastNameChange}/>
-						<InputBox label="email" type="text" onChange={this.onEmailChange}/>
-						
-					<Button onClick={this.toggleProfileEdit}>save</Button>
+						<InputBox label="first name" type="text" onChange={this.profileEditFuncs.onFirstNameChange}/>
+						<InputBox label="last name" type="text" onChange={this.profileEditFuncs.onLastNameChange}/>
+						<InputBox label="email" type="text" onChange={this.profileEditFuncs.onEmailChange}/>
+
+						<RadioContainer label="gender" >
+							<RadioButton label="male" name="gender" onChange={this.profileEditFuncs.onSelectMale}></RadioButton>
+							<RadioButton label="female" name="gender" onChange={this.profileEditFuncs.onSelectFemale}></RadioButton>
+						</RadioContainer>	
+
+						<InputBox label="Address" type="text" onChange={this.profileEditFuncs.onAddressChange}/>
+						<InputBox label="password" type="password" onChange={this.profileEditFuncs.onPasswordChange}/>
+
+						<Button onClick={this.profileEditFuncs.toggleProfileEdit}>save</Button>
 					</Scrollable>
 				)
 	}
@@ -201,7 +281,7 @@ class Dashboard extends React.Component{
 							</Card>
 
 							<Card header="profile">
-								{(this.state.profileEdit)? this.profileEdit():this.profileView() }
+								{(this.state.profileEditFlag)? this.profileEdit():this.profileView() }
 							</Card>
 
 							<Card header="assignments">

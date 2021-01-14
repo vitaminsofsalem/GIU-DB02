@@ -515,14 +515,14 @@ app.post("/studentprofile", async (req, res) => {
 	}
 });
 
-app.post("/editstudentprofile", async (req, res) => {
+app.post("/editprofile", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
 			.request()
-			.input("id", sql.Int, reqBody.studentid)
-			.input("firstName", sql.VarChar, reqBody.first_name)
-			.input("lastName", sql.VarChar, reqBody.last_name)
+			.input("id", sql.Int, reqBody.userid)
+			.input("firstName", sql.VarChar, reqBody.firstName)
+			.input("lastName", sql.VarChar, reqBody.lastName)
 			.input("password", sql.VarChar, reqBody.password)
 			.input("gender", sql.Bit, reqBody.gender)
 			.input("email", sql.VarChar, reqBody.email)
