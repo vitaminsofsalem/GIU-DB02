@@ -6,7 +6,7 @@ const InputBox = (props) =>
 		(
 			<>
 
-					<div style={formstyles.infobox}>
+					<div style={FormStyles.infobox}>
 						<label>{props.label}</label>
 						
 						<input
