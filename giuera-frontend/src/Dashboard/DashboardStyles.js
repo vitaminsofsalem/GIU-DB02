@@ -48,7 +48,23 @@ const DashboardStyles={
 		display:"flex",
 		flexDirection:"column",
 		borderRadius:"5px"
-	}
+	},
+	win:{
+		position:'fixed',
+		top:'50%',
+		left:'50%',
+		color:"white",
+		width:"80vw",
+		height:"80vh",
+		marginTop:"-40vh",
+		marginLeft:"-40vw",
+		padding:"20px",
+		backgroundColor:"#777777",
+		display:"flex",
+		flexDirection:"column",
+		borderRadius:"10px"
+	},
+
 }
 
 export default DashboardStyles

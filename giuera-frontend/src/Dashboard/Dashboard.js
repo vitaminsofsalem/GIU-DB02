@@ -9,7 +9,7 @@ import Scrollable from './Scrollable'
 import InputBox from './../Form/InputBox'
 import RadioContainer from './../Form/RadioContainer'
 import RadioButton from './../Form/RadioButton'
-
+import Win from './Win'
 class Dashboard extends React.Component{
 
 	constructor(props){
@@ -222,7 +222,7 @@ class Dashboard extends React.Component{
 			return this.state.coursesToBuy.map(course=>(
 					<InfoBox key={course.id} header={course.name} sub={"credit hours:" + course.creditHours}>
 					<p>{course.courseDescription}</p>
-					<Button>enroll</Button>	
+					<Button>enroll</Button>
 					</InfoBox>
 			))
 	}
@@ -230,6 +230,7 @@ class Dashboard extends React.Component{
 	profileView = () =>{
 				return (
 					<>
+
 					<h2>{this.state.user.firstName + ' ' + this.state.user.lastName}</h2>
 					<h2>{(this.props.user.type==2)? 'student':'instructor'}</h2>
 					<h2> ID : {this.state.user.id} </h2>
@@ -248,6 +249,7 @@ class Dashboard extends React.Component{
 						<InputBox label="last name" type="text" onChange={this.profileEditFuncs.onLastNameChange}/>
 						<InputBox label="email" type="text" onChange={this.profileEditFuncs.onEmailChange}/>
 
+						<Button>tel. numbers</Button>
 						<RadioContainer label="gender" >
 							<RadioButton label="male" name="gender" onChange={this.profileEditFuncs.onSelectMale}></RadioButton>
 							<RadioButton label="female" name="gender" onChange={this.profileEditFuncs.onSelectFemale}></RadioButton>
