@@ -31,6 +31,7 @@ const DashboardStyles={
 	button:{
 		display:"inline-block",
 		height:"40px",
+		width:"250px",
 		border : "none",
 		borderRadius:"20px",
 		color: "black",

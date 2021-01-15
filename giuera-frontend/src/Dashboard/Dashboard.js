@@ -45,6 +45,12 @@ class Dashboard extends React.Component {
 				deadline: "",
 				content: "",
 			},
+			newFeedBack:{
+				comment:'',
+				courseid:0,
+				studentid:0,
+			},
+			feedbackResult:'',
 			issueCert: {
 				id: 0,
 			},
@@ -575,7 +581,7 @@ class Dashboard extends React.Component {
 						: "rating : " + this.state.user.rating}
 				</h2>
 				<h2>Email: {this.state.user.email}</h2>
-				<h2>Gender: {this.state.user.gender ? "Male" : "Female"}</h2>
+				<h2>Gender: {!this.state.user.gender ? "Male" : "Female"}</h2>
 				<h2>Address: {this.state.user.address}</h2>
 			</Scrollable>
 		);
@@ -804,7 +810,46 @@ class Dashboard extends React.Component {
 						</div>
 					</>
 				) : (
-					<h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2>
+					
+					// <h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2>
+					<Card header="add feedback">
+						<InputBox
+						 multiline={1} 
+						 txtStyles={{height:'100%',fontSize:'30px'}}
+						 onChange={
+							 (e)=>(this.setState(()=>{ 
+								 this.state.newFeedBack.comment=e.target.value
+								 this.state.newFeedBack.courseid=course.id || course.cid
+								 this.state.newFeedBack.studentid=this.state.user.id
+								}))
+							}
+						 >
+						 </InputBox>
+						<Button onClick={async ()=>{
+
+							let data = this.state.newFeedBack;
+
+							const request = {
+								method: "POST",
+								headers: { "Content-Type": "application/json" },
+								body: JSON.stringify(data),
+							};
+			
+							let response = await fetch(
+								"http://localhost:3001/addfeedback",
+								request
+							);
+
+							data = await response.json()
+
+							
+
+							this.setState({feedbackResult:data.msg})
+
+
+						}}>{ (this.state.feedbackResult + "") ||'submit'}</Button>
+					</Card>
+
 				)}
 			</>
 		);
@@ -919,7 +964,7 @@ class Dashboard extends React.Component {
 					<Win toggle={this.state.popUpVisible}>
 						{this.state.popUpMsg}
 						<Button onClick={() => this.setState({ popUpVisible: 0 })}>
-							dimiss
+							dismiss
 						</Button>
 					</Win>
 					<Card header="my courses">
