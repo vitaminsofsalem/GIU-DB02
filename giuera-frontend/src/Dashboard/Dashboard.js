@@ -74,38 +74,38 @@ class Dashboard extends React.Component {
 			},
 			onNumberChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newAssignment.number = event.target.value;
+				this.setState((state) => {
+					state.newAssignment.number = event.target.value;
 				});
 			},
 			onTypeChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newAssignment.type = event.target.value;
+				this.setState((state) => {
+					state.newAssignment.type = event.target.value;
 				});
 			},
 			onFullGradeChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newAssignment.fullGrade = event.target.value;
+				this.setState((state) => {
+					state.newAssignment.fullGrade = event.target.value;
 				});
 			},
 			onWeightChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newAssignment.weight = event.target.value;
+				this.setState((state) => {
+					state.newAssignment.weight = event.target.value;
 				});
 			},
 			onDeadlineChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newAssignment.deadline = event.target.value;
+				this.setState((state) => {
+					state.newAssignment.deadline = event.target.value;
 				});
 			},
 			onContentChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newAssignment.content = event.target.value;
+				this.setState((state) => {
+					state.newAssignment.content = event.target.value;
 				});
 			},
 			addAssignment: async (cid) => {
@@ -186,28 +186,28 @@ class Dashboard extends React.Component {
 
 			onNameChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newCourse.name = event.target.value;
+				this.setState((state) => {
+					state.newCourse.name = event.target.value;
 				});
 			},
 			onDescChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newCourse.description = event.target.value;
+				this.setState((state) => {
+					state.newCourse.description = event.target.value;
 				});
 			},
 
 			onCreditHoursChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newCourse.creditHours = event.target.value;
+				this.setState((state) => {
+					state.newCourse.creditHours = event.target.value;
 				});
 			},
 
 			onPriceChanged: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newCourse.price = event.target.value;
+				this.setState((state) => {
+					state.newCourse.price = event.target.value;
 				});
 			},
 
@@ -755,8 +755,14 @@ class Dashboard extends React.Component {
 						{this.state.studentFeedback.map((val) => {
 							return (
 								<h3>
-									Feedback no: {val.number}/ comment: {val.comment}/ likes:
-									{val.numberOfLikes}
+									<InfoBox header={`feedback no. ${val.number}`}>
+										<h1>
+											{val.comment}
+										</h1>
+
+									</InfoBox>
+									{/* Feedback no: {val.number}/ comment: {val.comment}/ likes:
+									{val.numberOfLikes} */}
 								</h3>
 							);
 						})}
@@ -817,10 +823,10 @@ class Dashboard extends React.Component {
 						 multiline={1} 
 						 txtStyles={{height:'100%',fontSize:'30px'}}
 						 onChange={
-							 (e)=>(this.setState(()=>{ 
-								 this.state.newFeedBack.comment=e.target.value
-								 this.state.newFeedBack.courseid=course.id || course.cid
-								 this.state.newFeedBack.studentid=this.state.user.id
+							 (e)=>(this.setState((state)=>{ 
+								 state.newFeedBack.comment=e.target.value
+								 state.newFeedBack.courseid=course.id || course.cid
+								 state.newFeedBack.studentid=this.state.user.id
 								}))
 							}
 						 >

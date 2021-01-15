@@ -110,7 +110,7 @@ app.post("/userlogin", async (req, res) => {
 
 		console.log(query);
 
-		if (query.output.success === 0) {
+		if (query.output.success == 0) {
 			//if login fails
 
 			result = {
