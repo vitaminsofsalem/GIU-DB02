@@ -124,44 +124,65 @@ class Dashboard extends React.Component {
 		this.profileEditFuncs = {
 			onFirstNameChange: (event) => {
 				console.log(this.state);
-				this.setState(() => {
-					this.state.newProfile.firstName = event.target.value;
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						firstName: event.target.value,
+					},
 				});
 			},
 
 			onLastNameChange: (event) => {
-				this.setState(() => {
-					this.state.newProfile.lastName = event.target.value;
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						lastName: event.target.value,
+					},
 				});
 			},
 
 			onEmailChange: (event) => {
-				this.setState(() => {
-					this.state.newProfile.email = event.target.value;
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						email: event.target.value,
+					},
 				});
 			},
 
 			onPasswordChange: (event) => {
-				this.setState(() => {
-					this.state.newProfile.password = event.target.value;
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						password: event.target.value,
+					},
 				});
 			},
 
 			onAddressChange: (event) => {
-				this.setState(() => {
-					this.state.newProfile.address = event.target.value;
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						address: event.target.value,
+					},
 				});
 			},
 
 			onSelectMale: (event) => {
-				this.setState(() => {
-					this.state.newProfile.gender = 0;
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						gender: 1,
+					},
 				});
 			},
 
 			onSelectFemale: (event) => {
-				this.setState(() => {
-					this.state.newProfile.gender = 1;
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						gender: 0,
+					},
 				});
 			},
 			changeProfile: async () => {
@@ -311,6 +332,16 @@ class Dashboard extends React.Component {
 				},
 			});
 		}
+
+		this.setState({
+			newProfile: {
+				firstName: this.state.user.firstName,
+				lastName: this.state.user.lastName,
+				gender: this.state.user.gender,
+				email: this.state.user.email,
+				address: this.state.user.address,
+			},
+		});
 	};
 
 	componentDidMount = async () => {
@@ -346,7 +377,8 @@ class Dashboard extends React.Component {
 
 	profileView = () => {
 		return (
-			<>
+			<Scrollable>
+				<Button onClick={this.profileEditFuncs.toggleProfileEdit}>edit</Button>
 				<h2>{this.state.user.firstName + " " + this.state.user.lastName}</h2>
 				<h2>{this.props.user.type === 2 ? "student" : "instructor"}</h2>
 				<h2> ID : {this.state.user.id} </h2>
@@ -356,8 +388,10 @@ class Dashboard extends React.Component {
 						? "GPA : " + this.state.user.gpa
 						: "rating : " + this.state.user.rating}
 				</h2>
-				<Button onClick={this.profileEditFuncs.toggleProfileEdit}>edit</Button>
-			</>
+				<h2>Email: {this.state.user.email}</h2>
+				<h2>Gender: {this.state.user.gender ? "Male" : "Female"}</h2>
+				<h2>Address: {this.state.user.address}</h2>
+			</Scrollable>
 		);
 	};
 
@@ -367,16 +401,19 @@ class Dashboard extends React.Component {
 				<InputBox
 					label="first name"
 					type="text"
+					value={this.state.newProfile.firstName}
 					onChange={this.profileEditFuncs.onFirstNameChange}
 				/>
 				<InputBox
 					label="last name"
 					type="text"
+					value={this.state.newProfile.lastName}
 					onChange={this.profileEditFuncs.onLastNameChange}
 				/>
 				<InputBox
 					label="email"
 					type="text"
+					value={this.state.newProfile.email}
 					onChange={this.profileEditFuncs.onEmailChange}
 				/>
 
@@ -397,6 +434,7 @@ class Dashboard extends React.Component {
 				<InputBox
 					label="Address"
 					type="text"
+					value={this.state.newProfile.address}
 					onChange={this.profileEditFuncs.onAddressChange}
 				/>
 				<InputBox
@@ -474,7 +512,11 @@ class Dashboard extends React.Component {
 							: this.instructorCourses()}
 					</Card>
 
-					<Card header="profile"></Card>
+					<Card header="profile">
+						{this.state.profileEditFlag
+							? this.profileEdit()
+							: this.profileView()}
+					</Card>
 
 					<Card header="payment settings"></Card>
 				</CardsContainer>

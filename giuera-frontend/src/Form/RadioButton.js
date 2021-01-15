@@ -1,26 +1,18 @@
+import FormStyles from "./FormStyles";
 
-import FormStyles from './FormStyles'
-
-
-const RadioButton = (props) =>
-
-		(
-			<>
-			<input 
-			type="radio" 
+const RadioButton = (props) => (
+	<>
+		<input
+			type="radio"
 			id={props.id}
-			onChange={props.onChange} 
-			name={props.name} 
+			onChange={props.onChange}
+			name={props.name}
 			htmlFor={props.htmlFor}
-			 style={FormStyles.RadioButton}>
+			style={FormStyles.RadioButton}
+		></input>
 
-			</input>
+		<label style={FormStyles.radioButton}>{props.label}</label>
+	</>
+);
 
-			<label style={FormStyles.radioButton}>{props.label}</label>
-			</>
-		)
-			
-	
-
-
-export default RadioButton
+export default RadioButton;
