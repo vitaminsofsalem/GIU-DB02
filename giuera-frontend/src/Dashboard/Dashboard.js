@@ -900,8 +900,6 @@ class Dashboard extends React.Component {
 							? this.profileEdit()
 							: this.profileView()}
 					</Card>
-
-					<Card header="payment settings"></Card>
 				</CardsContainer>
 			</div>
 		);
