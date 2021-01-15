@@ -45,7 +45,7 @@ const getUserID = async (db, email) => {
 const signUpAs = (flag) => {
 	//specifies which register procedure to be executed
 
-	if (flag == "instructor") {
+	if (flag === "instructor") {
 		return "instructorRegister";
 	}
 
@@ -56,17 +56,17 @@ app.post("/userregister", async (req, res) => {
 	try {
 		let result;
 		let userID;
-		let submission = req.body //receives data sent by the request from front end
+		let submission = req.body; //receives data sent by the request from front end
 
-		let query = await database.request() 
-			.input('first_name',sql.VarChar,submission.firstName)
-			.input('last_name',sql.VarChar,submission.lastName)
-			.input('password',sql.VarChar,submission.password)
-			.input('email',sql.VarChar,submission.email)
-			.input('gender',sql.Bit,submission.gender)
-			.input('address',sql.VarChar,submission.address)
+		let query = await database
+			.request()
+			.input("first_name", sql.VarChar, submission.firstName)
+			.input("last_name", sql.VarChar, submission.lastName)
+			.input("password", sql.VarChar, submission.password)
+			.input("email", sql.VarChar, submission.email)
+			.input("gender", sql.Bit, submission.gender)
+			.input("address", sql.VarChar, submission.address)
 			.execute(signUpAs(submission.signUpAs));
-				
 
 		userID = await getUserID(database, submission.email); //get the id of the new user
 
@@ -84,7 +84,6 @@ app.post("/userregister", async (req, res) => {
 		res.status(200);
 		res.send(result); //send the result to the front end
 		database.close(); //close connection to database
-
 	} catch (err) {
 		console.log(err);
 		let result = {
@@ -111,7 +110,7 @@ app.post("/userlogin", async (req, res) => {
 
 		console.log(query);
 
-		if (query.output.success == 0) {
+		if (query.output.success === 0) {
 			//if login fails
 
 			result = {
@@ -278,11 +277,14 @@ app.post("/addinstructorcourse", async (req, res) => {
 
 app.post("/viewacceptedcourses", async (req, res) => {
 	try {
+		//Not calling procedure to show all courses of instructor not only accepeted, due to lack of admin implementation
 		const reqBody = req.body;
 		const dbReq = await database
 			.request()
-			.input("instrId", sql.Int, reqBody.instructorid)
-			.execute("InstructorViewAcceptedCoursesByAdmin");
+			.query(
+				"SELECT id, name, creditHours FROM Course WHERE instructorId = " +
+					reqBody.instructorid
+			);
 
 		console.log(dbReq);
 
@@ -547,6 +549,7 @@ app.post("/editprofile", async (req, res) => {
 
 app.get("/availablecourses", async (_, res) => {
 	try {
+		//Not calling procedure to show all courses instead, due to lack of admin implementation
 		const dbReq = await database.request().query("select * from COURSE ");
 
 		console.log(dbReq);
@@ -566,22 +569,22 @@ app.get("/availablecourses", async (_, res) => {
 	}
 });
 
-
-
 app.post("/viewenrolled", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
 			.request()
 			.input("sid", sql.Int, reqBody.studentid)
-			.query('SELECT * FROM Course a  LEFT JOIN StudentTakeCourse b on a.id=b.cid WHERE @sid=sid')
+			.query(
+				"SELECT * FROM Course a  LEFT JOIN StudentTakeCourse b on a.id=b.cid WHERE @sid=sid"
+			);
 
 		console.log(dbReq);
 
 		res.status(200);
 		res.send({
 			msg: "success",
-			courses : dbReq.recordset,
+			courses: dbReq.recordset,
 		});
 	} catch (err) {
 		console.log(err);
@@ -931,5 +934,4 @@ app.post("/viewcertificate", async (req, res) => {
 		res.status(500);
 		res.send(result);
 	}
-})
-
+});
