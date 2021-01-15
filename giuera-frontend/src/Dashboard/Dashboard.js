@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CardsContainer from "./CardsContainer";
 import DashboardStyles from "./DashboardStyles";
 import Card from "./Card";
@@ -16,8 +16,13 @@ class Dashboard extends React.Component {
 			profileEditFlag: 0,
 			coursesToBuy: [],
 			instructorAddingCourse: false,
+			instructorAddingAssignment: false,
 			popUpMsg: "",
 			popUpVisible: 0,
+			coursePopupVisible: 0,
+			popupCourse: {},
+			studentAssignments: [],
+			studentFeedback: [],
 			newProfile: {
 				firstName: "",
 				lastName: "",
@@ -32,9 +37,138 @@ class Dashboard extends React.Component {
 				creditHours: 0,
 				price: 0.0,
 			},
-
+			newAssignment: {
+				number: 0,
+				type: "",
+				fullGrade: 0,
+				weight: 0,
+				deadline: "",
+				content: "",
+			},
+			issueCert: {
+				id: 0,
+			},
 			user: {},
 			courses: [],
+		};
+
+		this.instructorCourseDetailsFuncs = {
+			toggleAddAssignment: () => {
+				this.setState({
+					instructorAddingAssignment: !this.state.instructorAddingAssignment,
+				});
+			},
+			onStudentIssueCertChange: (event) => {
+				console.log(this.state);
+				this.setState({
+					issueCert: {
+						id: event.target.value,
+					},
+				});
+			},
+			onNumberChanged: (event) => {
+				console.log(this.state);
+				this.setState(() => {
+					this.state.newAssignment.number = event.target.value;
+				});
+			},
+			onTypeChanged: (event) => {
+				console.log(this.state);
+				this.setState(() => {
+					this.state.newAssignment.type = event.target.value;
+				});
+			},
+			onFullGradeChanged: (event) => {
+				console.log(this.state);
+				this.setState(() => {
+					this.state.newAssignment.fullGrade = event.target.value;
+				});
+			},
+			onWeightChanged: (event) => {
+				console.log(this.state);
+				this.setState(() => {
+					this.state.newAssignment.weight = event.target.value;
+				});
+			},
+			onDeadlineChanged: (event) => {
+				console.log(this.state);
+				this.setState(() => {
+					this.state.newAssignment.deadline = event.target.value;
+				});
+			},
+			onContentChanged: (event) => {
+				console.log(this.state);
+				this.setState(() => {
+					this.state.newAssignment.content = event.target.value;
+				});
+			},
+			addAssignment: async (cid) => {
+				if (!this.state.newAssignment.number > 0) {
+					this.setState({
+						popUpMsg: "Invalid input at number, please fix",
+						popUpVisible: 1,
+					});
+					return;
+				}
+				if (!this.state.newAssignment.fullGrade > 0) {
+					this.setState({
+						popUpMsg: "Invalid input at full grade, please fix",
+						popUpVisible: 1,
+					});
+					return;
+				}
+				if (!this.state.newAssignment.weight > 0) {
+					this.setState({
+						popUpMsg: "Invalid input at weight, please fix",
+						popUpVisible: 1,
+					});
+					return;
+				}
+				if (this.state.newAssignment.type.trim() === "") {
+					this.setState({
+						popUpMsg: "Type cannot be empty, please fix",
+						popUpVisible: 1,
+					});
+					return;
+				}
+				if (this.state.newAssignment.content.trim() === "") {
+					this.setState({
+						popUpMsg: "Content cannot be empty, please fix",
+						popUpVisible: 1,
+					});
+					return;
+				}
+				if (this.state.newAssignment.deadline.trim() === "") {
+					this.setState({
+						popUpMsg: "Deadline cannot be empty, please fix",
+						popUpVisible: 1,
+					});
+					return;
+				}
+				this.instructorCourseDetailsFuncs.toggleAddAssignment();
+				const data = {
+					instructorid: this.props.user.id,
+					courseid: cid,
+					number: this.state.newAssignment.number,
+					type: this.state.newAssignment.type,
+					fullGrade: this.state.newAssignment.fullGrade,
+					weight: this.state.newAssignment.weight,
+					deadline: this.state.newAssignment.deadline,
+					content: this.state.newAssignment.content,
+				};
+				console.log(data);
+
+				const request = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(data),
+				};
+
+				let response = await fetch(
+					"http://localhost:3001/defineassignment",
+					request
+				);
+			},
 		};
 
 		this.instructorAddCourseFuncs = {
@@ -115,7 +249,6 @@ class Dashboard extends React.Component {
 					body: JSON.stringify(data),
 				};
 
-				console.log(JSON.stringify(data));
 				let response = await fetch("http://localhost:3001/addcourse", request);
 				this.fetchInstructorCourses();
 			},
@@ -229,6 +362,51 @@ class Dashboard extends React.Component {
 		});
 	};
 
+	fetchStudentAssignments = async (cid) => {
+		const sub = {
+			instructorid: this.props.user.id,
+			courseid: cid,
+		};
+
+		const request = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(sub),
+		};
+
+		let response = await fetch(
+			"http://localhost:3001/viewstudentassignments",
+			request
+		);
+		let data = await response.json();
+
+		this.setState({
+			studentAssignments: data.data,
+		});
+	};
+
+	fetchStudentFeedback = async (cid) => {
+		const sub = {
+			instructorid: this.props.user.id,
+			courseid: cid,
+		};
+
+		const request = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(sub),
+		};
+
+		let response = await fetch(
+			"http://localhost:3001/viewstudentfeedback",
+			request
+		);
+		let data = await response.json();
+
+		this.setState({
+			studentFeedback: data.data,
+		});
+	};
 	fetchStudentCourses = async () => {
 		const sub = {
 			studentid: this.props.user.id,
@@ -356,7 +534,15 @@ class Dashboard extends React.Component {
 				header={course.name}
 				sub={"credit hours:" + course.creditHours}
 			>
-				<Button>view</Button>
+				<Button
+					onClick={() => {
+						this.fetchStudentAssignments(course.cid || course.id);
+						this.fetchStudentFeedback(course.cid || course.id);
+						this.setState({ coursePopup: course, coursePopupVisible: true });
+					}}
+				>
+					view
+				</Button>
 			</InfoBox>
 		));
 	};
@@ -486,11 +672,202 @@ class Dashboard extends React.Component {
 
 	instructorCourses = () => {
 		return (
-			<Scrollable>
+			<>
 				<Button onClick={this.instructorAddCourseFuncs.toggleAddCourse}>
 					add
 				</Button>
-				{this.viewCourses()}
+				<Scrollable>{this.viewCourses()}</Scrollable>
+			</>
+		);
+	};
+
+	coursePopupGeneral = (course) => {
+		return (
+			<>
+				<h1>{course.name}</h1>
+				<h2>ID: {course.id || course.cid}</h2>
+				<h2>Credit Hours: {course.creditHours}</h2>
+				{this.props.user.type === 1 ? (
+					<>
+						<Button
+							onClick={this.instructorCourseDetailsFuncs.toggleAddAssignment}
+						>
+							add assignment
+						</Button>
+						<h2>Assignments by students</h2>
+						{this.state.studentAssignments.map((val) => {
+							return (
+								<>
+									<h3>Assignment by: {val.sid}</h3>
+									<InputBox
+										label="Grade:"
+										type="number"
+										onChange={(e) => {
+											const list = this.state.studentAssignments;
+											list[list.indexOf(val)].grade = e.target.value;
+										}}
+									/>
+									<div>
+										<Button
+											onClick={async () => {
+												const list = this.state.studentAssignments;
+												if (list[list.indexOf(val)].grade > 0) {
+													const data = {
+														instructorid: this.props.user.id,
+														courseid: course.id || course.cid,
+														studentid: val.sid,
+														assignment_number: val.assignmentNumber,
+														type: val.assignmentType,
+														grade: list[list.indexOf(val)].grade,
+													};
+													const request = {
+														method: "POST",
+														headers: { "Content-Type": "application/json" },
+														body: JSON.stringify(data),
+													};
+													console.log(data);
+
+													let response = await fetch(
+														"http://localhost:3001/gradeassignment",
+														request
+													);
+												} else {
+													this.setState({
+														popUpMsg: "Enter valid grade to grade student",
+														popUpVisible: 1,
+													});
+												}
+											}}
+										>
+											submit grade
+										</Button>
+									</div>
+								</>
+							);
+						})}
+						<h2>Feedback by students</h2>
+						{this.state.studentFeedback.map((val) => {
+							return (
+								<h3>
+									Feedback no: {val.number}/ comment: {val.comment}/ likes:
+									{val.numberOfLikes}
+								</h3>
+							);
+						})}
+						<InputBox
+							label="Issue certificate to student id:"
+							type="number"
+							value={this.state.issueCert.id}
+							onChange={
+								this.instructorCourseDetailsFuncs.onStudentIssueCertChange
+							}
+						/>
+						<div style={{ marginTop: 30, marginLeft: 50 }}>
+							<Button
+								onClick={async () => {
+									if (this.state.issueCert.id > 0) {
+										const today = new Date();
+										const dd = String(today.getDate()).padStart(2, "0");
+										const mm = String(today.getMonth() + 1).padStart(2, "0");
+										const yyyy = today.getFullYear();
+										const data = {
+											instructorid: this.props.user.id,
+											courseid: course.id || course.cid,
+											studentid: this.state.issueCert.id,
+											issueDate: yyyy + "-" + dd + "-" + mm,
+										};
+										const request = {
+											method: "POST",
+											headers: { "Content-Type": "application/json" },
+											body: JSON.stringify(data),
+										};
+
+										let response = await fetch(
+											"http://localhost:3001/issuecertificate",
+											request
+										);
+										this.setState({
+											issueCert: {
+												id: 0,
+											},
+										});
+									} else {
+										this.setState({
+											popUpMsg: "Enter valid id to issue certificate to",
+											popUpVisible: 1,
+										});
+									}
+								}}
+							>
+								issue certificate
+							</Button>
+						</div>
+					</>
+				) : (
+					<h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2>
+				)}
+			</>
+		);
+	};
+
+	coursePopupAddAssign = (cid) => {
+		return (
+			<Scrollable>
+				<InputBox
+					label="Assignment Number"
+					type="number"
+					onChange={this.instructorCourseDetailsFuncs.onNumberChanged}
+				/>
+				<InputBox
+					label="Assignment Type"
+					type="text"
+					onChange={this.instructorCourseDetailsFuncs.onTypeChanged}
+				/>
+				<InputBox
+					label="Full Grade"
+					type="number"
+					onChange={this.instructorCourseDetailsFuncs.onFullGradeChanged}
+				/>
+				<InputBox
+					label="Weight"
+					type="number"
+					onChange={this.instructorCourseDetailsFuncs.onWeightChanged}
+				/>
+				<InputBox
+					label="Deadline"
+					type="text"
+					onChange={this.instructorCourseDetailsFuncs.onDeadlineChanged}
+				/>
+				<InputBox
+					label="Content"
+					type="text"
+					onChange={this.instructorCourseDetailsFuncs.onContentChanged}
+				/>
+
+				<Button
+					onClick={() => {
+						this.instructorCourseDetailsFuncs.addAssignment(cid);
+					}}
+				>
+					save
+				</Button>
+				<Button onClick={this.instructorCourseDetailsFuncs.toggleAddAssignment}>
+					cancel
+				</Button>
+			</Scrollable>
+		);
+	};
+
+	coursePopup = () => {
+		const course = this.state.coursePopup;
+		if (course === undefined) {
+			return <></>;
+		}
+		return (
+			<Scrollable>
+				{this.state.instructorAddingAssignment
+					? this.coursePopupAddAssign(course.id || course.cid)
+					: this.coursePopupGeneral(course)}
 			</Scrollable>
 		);
 	};
@@ -500,6 +877,12 @@ class Dashboard extends React.Component {
 			<div style={DashboardStyles.bg}>
 				<h1 style={{ color: "white" }}>Welcome, {this.state.user.firstName}</h1>
 				<CardsContainer>
+					<Win toggle={this.state.coursePopupVisible}>
+						{this.coursePopup()}
+						<Button onClick={() => this.setState({ coursePopupVisible: 0 })}>
+							dimiss
+						</Button>
+					</Win>
 					<Win toggle={this.state.popUpVisible}>
 						{this.state.popUpMsg}
 						<Button onClick={() => this.setState({ popUpVisible: 0 })}>
@@ -529,6 +912,12 @@ class Dashboard extends React.Component {
 			<div style={DashboardStyles.bg}>
 				<h1 style={{ color: "white" }}>Welcome, {this.state.user.firstName}</h1>
 				<CardsContainer>
+					<Win toggle={this.state.coursePopupVisible}>
+						{this.coursePopup()}
+						<Button onClick={() => this.setState({ coursePopupVisible: 0 })}>
+							dimiss
+						</Button>
+					</Win>
 					<Win toggle={this.state.popUpVisible}>
 						{this.state.popUpMsg}
 						<Button onClick={() => this.setState({ popUpVisible: 0 })}>
