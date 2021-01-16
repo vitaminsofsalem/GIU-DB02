@@ -10,6 +10,7 @@ import RadioContainer from "./../Form/RadioContainer";
 import RadioButton from "./../Form/RadioButton";
 import Win from "./Win";
 import Profile from './Profile'
+import Certificates from "./Certificates";
 
 class Dashboard extends React.Component {
 	constructor(props) {
@@ -807,9 +808,13 @@ class Dashboard extends React.Component {
 						<Scrollable>{this.viewCourses()}</Scrollable>
 					</Card>
 
+
+
 					<Card header="profile">
 							<Profile loadProfile={this.loadProfile} user={this.state.user}/>
 					</Card>
+
+
 
 					<Card header="assignments">
 						<h1>hello world</h1>
@@ -819,9 +824,12 @@ class Dashboard extends React.Component {
 					<Card header="available courses to buy">
 						<Scrollable>{this.viewCoursesToBuy()}</Scrollable>
 					</Card>
-					<Card header="my certificates">
 
+
+					<Card header="my certificates">
+						<Certificates user={this.state.user}/>
 					</Card>
+
 				</CardsContainer>
 			</div>
 		);

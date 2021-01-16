@@ -11,7 +11,7 @@ const DashboardStyles={
 	},
 	card:{
 		color:"white",
-		width:"400px",
+		width:"380px",
 		height:"600px",
 		padding:"20px",
 		margin:"10px",
