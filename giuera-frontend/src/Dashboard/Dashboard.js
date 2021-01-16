@@ -10,7 +10,8 @@ import RadioContainer from "./../Form/RadioContainer";
 import RadioButton from "./../Form/RadioButton";
 import Win from "./Win";
 import Profile from './Profile'
-import Certificates from "./Certificates";
+import RateInstructor from './RateInstructor'
+import Certificate from "./Certificate";
 import CoursesToBuy from "./CoursesToBuy";
 
 class Dashboard extends React.Component {
@@ -662,6 +663,12 @@ class Dashboard extends React.Component {
 					<Card header="course content">
 						{course.content}	
 					</Card>
+					<Card header="rate instructor">
+						<RateInstructor iid={course.instructorId} sid={this.state.user.id}/>
+					</Card>
+					<Card header="certificate">
+						<Certificate sid={this.state.user.id} cid={course.id}/>
+					</Card>
 				</>
 				)}
 			</>
@@ -754,7 +761,7 @@ class Dashboard extends React.Component {
 					</Card>
 
 					<Card header="profile">
-							<Profile loadProfile={this.loadProfile} getUser={()=>(this.state.user)}/>
+							<Profile loadProfile={this.loadProfile} user={this.state.user}/>
 					</Card>
 				</CardsContainer>
 			</div>
@@ -800,9 +807,6 @@ class Dashboard extends React.Component {
 					</Card>
 
 
-					<Card header="my certificates">
-						<Certificates user={this.state.user}/>
-					</Card>
 
 				</CardsContainer>
 			</div>
