@@ -19,6 +19,7 @@ class Dashboard extends React.Component {
 		this.state = {
 			profileEditFlag: 0,
 			creditAddFlag: false,
+			promoCodeFlag: false,
 			coursesToBuy: [],
 			instructorAddingCourse: false,
 			instructorAddingAssignment: false,
@@ -58,9 +59,43 @@ class Dashboard extends React.Component {
 				expiryDate:"",
 				cvv:"",
 			},
+			newPromo: {
+				studentid:"",
+			},
 			user: null,
 			courses: [],
 		};
+
+		this.viewPromoFuncs ={
+			toggleViewPromo: () => {
+				this.setState({
+					promoCodeFlag: !this.state.promoCodeFlag,
+				});
+			},
+
+			onPromoCodechange: (event) => {
+				this.setState({
+					newPromo: {
+						studentid: this.props.user.id,
+					},
+				});
+			},
+			seePromo: async () => {
+				this.viewPromoFuns.toggleViewPromo();
+				const stuff = {
+					studentid: this.props.user.id,
+					...this.state.newPromo,
+				};
+				const request = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(stuff),
+				};
+				let response = await fetch("http://localhost:3001/viewpromo", request);
+				this.fetchViewPromo();
+			}
+		}
+		
 
 		this.instructorCourseDetailsFuncs = {
 			toggleAddAssignment: () => {
@@ -531,6 +566,29 @@ class Dashboard extends React.Component {
 		});
 	}
 
+	fetchViewPromo = async () => {
+		const stuff = {
+			studentid: this.props.user.id,
+		};
+		
+		const request = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(stuff), 
+		};
+		console.log(JSON.stringify(stuff));
+		let response = await fetch(
+			"http://localhost:3001/viewpromo",
+			request
+		);
+
+		const data = await response.json();
+
+		this.setState({
+			studentid: data.data,
+		});
+	}
+
 	loadProfile = async () => {
 		if (this.props.user.type === 1) {
 			this.fetchInstructorCourses();
@@ -645,6 +703,15 @@ class Dashboard extends React.Component {
 		);
 	};
 
+	promoView = () => {
+		return (
+			<Scrollable>
+				<Button onClick={this.viewPromoFuncs.toggleViewPromo}>View Promo</Button>
+				<h2>ID: {this.state.user.id}</h2>
+				<h2>Promo codes: {this.state.user.id}</h2>
+			</Scrollable>
+		)
+	}
 	profileEdit = () => {
 		return (
 			<Scrollable>
@@ -1020,6 +1087,12 @@ class Dashboard extends React.Component {
 		);
 	};
 
+	// promoView = () => {
+	// 	return (
+	// 		<Win toggle= {() => this.setState({ popUpVisible: 1 })}><h1>Hello World!</h1></Win>
+	// 	);
+	// };
+
 	instructorDashboard = () => {
 		return (
 			<div style={DashboardStyles.bg}>
@@ -1097,6 +1170,7 @@ class Dashboard extends React.Component {
 						<Certificates user={this.state.user}/>
 					</Card>
 
+					<Card header="Promocodes"> {this.state.promoCodeFlag ? this.promoView() : this.promoView()}</Card>
 				</CardsContainer>
 			</div>
 		);

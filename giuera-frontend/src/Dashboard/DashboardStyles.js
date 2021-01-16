@@ -63,7 +63,8 @@ const DashboardStyles={
 		backgroundColor:"#777777",
 		display:"flex",
 		flexDirection:"column",
-		borderRadius:"10px"
+		borderRadius:"10px",
+		zIndex:'3'
 	},
 
 }

@@ -7,6 +7,8 @@ import Scrollable from "./Scrollable";
 import InputBox from "./../Form/InputBox";
 import RadioContainer from "./../Form/RadioContainer";
 import RadioButton from "./../Form/RadioButton";
+import Tel from './Tel'
+import Win from './Win';
 
 class Profile extends React.Component{
 
@@ -16,6 +18,7 @@ class Profile extends React.Component{
 		this.state ={ 
 			user:null,
 			profileEditFlag: 0,
+			manageTelFlag : 0,
 			newProfile: {
 				firstName: "",
 				lastName: "",
@@ -175,7 +178,17 @@ class Profile extends React.Component{
 					onChange={this.profileEditFuncs.onEmailChange}
 				/>
 
-				<Button>tel. numbers</Button>
+				<Button onClick={()=>{
+					this.setState({ manageTelFlag:1})
+				}}>tel. numbers</Button>
+
+				<Win toggle={this.state.manageTelFlag}>
+					<h1>telephone numbers</h1>
+					<Tel user={this.state.user}/>
+					<Button onClick={()=>(this.setState({
+						manageTelFlag:0
+					}))}>dismiss</Button>
+				</Win >
 
 				<RadioContainer label="gender">
 					<RadioButton

@@ -3,7 +3,7 @@ let express = require("express");
 let sql = require("mssql");
 
 
-const SERVER_ERROR = "Server encountered and error";
+const SERVER_ERROR = "Server encountered an error";
 
 const dbconfig = {
 	//config for connecting to our mssql server
@@ -145,13 +145,48 @@ app.post("/userlogin", async (req, res) => {
 		database.close();
 	}
 });
+
+
+app.post("/removemobile", async (req, res) => {
+	try {
+		const reqBody = req.body;
+		const dbReq = await database
+			.request()
+			.input("id", sql.Int, reqBody.id)
+			.input("mobile_number", sql.VarChar, reqBody.mobileNumber)
+			.query("DELETE FROM UserMobileNumber WHERE @mobile_number=mobilenumber AND @id=id")
+
+		console.log('\n\n\n\n\n\n\n\n\n ahej:',dbReq);
+
+		res.status(200);
+
+		res.send({
+			msg: "success",
+		});
+
+	} catch (err) {
+				
+		if (1){
+			res.sendStatus(400);
+		}
+
+		else{
+			const result = {
+				msg: SERVER_ERROR,
+			};
+			res.status(500);
+			res.send(result);
+		}
+	}
+});
+
 app.post("/addmobile", async (req, res) => {
 	try {
 		const reqBody = req.body;
 		const dbReq = await database
 			.request()
-			.input("id", sql.Int, reqBody.userid)
-			.input("mobile_number", sql.VarChar, reqBody.mobile_number)
+			.input("id", sql.Int, reqBody.id)
+			.input("mobile_number", sql.VarChar, reqBody.mobileNumber)
 			.execute("addMobile");
 
 		console.log(dbReq);
@@ -160,6 +195,33 @@ app.post("/addmobile", async (req, res) => {
 		res.send({
 			msg: "success",
 		});
+	} catch (err) {
+		console.log(err);
+		const result = {
+			msg: SERVER_ERROR,
+		};
+		res.status(500);
+		res.send(result);
+	}
+});
+
+app.post("/viewmobile", async (req, res) => {
+	try {
+		const reqBody = req.body;
+		const dbReq = await database
+			.request()
+			.input("id", sql.Int, reqBody.id)
+			.query('SELECT * FROM UserMobileNumber WHERE id=@id')
+
+		console.log(dbReq);
+
+		res.status(200);
+		res.send({
+			recordset : dbReq.recordset,
+			msg: "success",
+		});
+
+		
 	} catch (err) {
 		console.log(err);
 		const result = {
@@ -604,7 +666,7 @@ app.post("/viewcreditcard", async (req, res) => {
 			.request()
 			// .input("sid", sql.Int, reqBody.studentid)
 			.query(
-				"SELECT * FROM StudentAddCreditCard"
+				"SELECT * FROM CreditCard a INNER JOIN StudentAddCreditCard b ON a.number = b.creditcardnumber WHERE sid=@sid"
 			);
 
 		console.log(dbReq);
@@ -681,10 +743,10 @@ app.post("/addcreditcard", async (req, res) => {
 		const dbReq = await database
 			.request()
 			.input("number", sql.VarChar, reqBody.number)
-			.input("sid", sql.Int, reqBody.studentid)
-			.input("cardHolderName", sql.VarChar, reqBody.card_holder_name)
+			.input("sid", sql.Int, reqBody.sid)
+			.input("cardHolderName", sql.VarChar, reqBody.cardHolderName)
 			.input("cvv", sql.VarChar, reqBody.cvv)
-			.input("expiryDate", sql.DateTime, reqBody.expiry_date)
+			.input("expiryDate", sql.DateTime, reqBody.expiryDate)
 			.execute("addCreditCard");
 
 		console.log(dbReq);
