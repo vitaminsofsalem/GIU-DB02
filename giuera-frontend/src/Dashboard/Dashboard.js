@@ -18,6 +18,9 @@ class Dashboard extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			profileEditFlag: 0,
+			creditAddFlag: false,
+			promoCodeFlag: false,
 			coursesToBuy: [],
 			instructorAddingCourse: false,
 			instructorAddingAssignment: false,
@@ -51,9 +54,49 @@ class Dashboard extends React.Component {
 			issueCert: {
 				id: 0,
 			},
+			newCard: {
+				number:"",
+				cardHolderName:"",
+				expiryDate:"",
+				cvv:"",
+			},
+			newPromo: {
+				studentid:"",
+			},
 			user: null,
 			courses: [],
 		};
+
+		this.viewPromoFuncs ={
+			toggleViewPromo: () => {
+				this.setState({
+					promoCodeFlag: !this.state.promoCodeFlag,
+				});
+			},
+
+			onPromoCodechange: (event) => {
+				this.setState({
+					newPromo: {
+						studentid: this.props.user.id,
+					},
+				});
+			},
+			seePromo: async () => {
+				this.viewPromoFuns.toggleViewPromo();
+				const stuff = {
+					studentid: this.props.user.id,
+					...this.state.newPromo,
+				};
+				const request = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(stuff),
+				};
+				let response = await fetch("http://localhost:3001/viewpromo", request);
+				this.fetchViewPromo();
+			}
+		}
+		
 
 		this.instructorCourseDetailsFuncs = {
 			toggleAddAssignment: () => {
@@ -257,6 +300,161 @@ class Dashboard extends React.Component {
 			},
 		};
 
+		
+		this.profileEditFuncs = {
+			onFirstNameChange: (event) => {
+				console.log(this.state);
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						firstName: event.target.value,
+					},
+				});
+			},
+
+			onLastNameChange: (event) => {
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						lastName: event.target.value,
+					},
+				});
+			},
+
+			onEmailChange: (event) => {
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						email: event.target.value,
+					},
+				});
+			},
+
+			onPasswordChange: (event) => {
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						password: event.target.value,
+					},
+				});
+			},
+
+			onAddressChange: (event) => {
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						address: event.target.value,
+					},
+				});
+			},
+
+			onSelectMale: (event) => {
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						gender: 1,
+					},
+				});
+			},
+
+			onSelectFemale: (event) => {
+				this.setState({
+					newProfile: {
+						...this.state.newProfile,
+						gender: 0,
+					},
+				});
+			},
+			changeProfile: async () => {
+				this.profileEditFuncs.toggleProfileEdit();
+				const sub = {
+					userid: this.props.user.id,
+					...this.state.newProfile,
+				};
+
+				console.log(sub);
+
+				const request = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(sub),
+				};
+
+				let response = await fetch(
+					"http://localhost:3001/editprofile",
+					request
+				);
+				//let data = await response.json();
+				this.loadProfile();
+			},
+
+			toggleProfileEdit: () => {
+				console.log(this.state.profileEditFlag);
+
+				this.setState({
+					profileEditFlag: !this.state.profileEditFlag,
+				});
+			},
+		};
+
+		this.creditAddFuncs = { 
+			onCardNumberChange: (event) => {
+				this.setState({
+					newCard: {
+						...this.state.newCard,
+						number: event.target.value,
+					},
+				});
+			},
+
+			onCardNameChange: (event) => {
+				this.setState ({
+					newCard: {
+						...this.state.newCard,
+						cardHolderName: event.target.value,
+					},
+				});
+			},
+
+			onExpiryDateChange: (event) => {
+				this.setState ({
+					newCard: {
+						...this.state.newCard,
+						expiryDate: event.target.value,
+					},
+				});
+			},
+
+			onCvvChange: (event) => {
+				this.setState ({
+					newCard: {
+						...this.state.newCard,
+						cvv: event.target.value,
+					},
+				});
+			},
+
+			toggleCreditAdd: () => {
+				this.setState({
+					creditAddFlag: !this.state.creditAddFlag
+				});
+			},
+			addCreditCard: async () => {
+				this.creditAddFuncs.toggleCreditAdd();
+				const stuff = {
+					sid: this.props.user.id,
+					...this.state.newCard,
+				};
+				const request = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(stuff),
+				};
+				let response = await fetch("http://localhost:3001/addcreditcard", request);
+				this.fetchStudentCreditCard();
+			},
+		}
+
 	}
 
 
@@ -345,6 +543,52 @@ class Dashboard extends React.Component {
 			courses: resData.data,
 		});
 	};
+
+	fetchStudentCreditCard = async () => {
+		const stuff = {
+			sid: this.props.user.id,
+		};
+		
+		const request = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(stuff), 
+		};
+		console.log(JSON.stringify(stuff));
+		let response = await fetch(
+			"http://localhost:3001/viewcreditcard",
+			request
+		);
+
+		const data = await response.json();
+
+		this.setState({
+			studentCreditCard: data.credit,
+		});
+	}
+
+	fetchViewPromo = async () => {
+		const stuff = {
+			studentid: this.props.user.id,
+		};
+		
+		const request = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(stuff), 
+		};
+		console.log(JSON.stringify(stuff));
+		let response = await fetch(
+			"http://localhost:3001/viewpromo",
+			request
+		);
+
+		const data = await response.json();
+
+		this.setState({
+			studentid: data.data,
+		});
+	}
 
 	loadProfile = async () => {
 		if (this.props.user.type === 1) {
@@ -447,6 +691,119 @@ class Dashboard extends React.Component {
 	};
 
 
+	creditView = () => {
+		return (
+			<Scrollable>
+				<Button onClick={this.creditAddFuncs.toggleCreditAdd}>Add Credit Card</Button>
+				<h2>ID: {this.state.user.id}</h2>
+				<h2>CardNumber: {this.state.user.number}</h2>
+				<h2>CardHolder: {this.state.user.cardHolderName}</h2>
+				<h2>ExpiryDate: {this.state.user.expiryDate}</h2>
+				<h2>Cvv: {this.state.user.cvv}</h2>
+			</Scrollable>
+		);
+	};
+
+	promoView = () => {
+		return (
+			<Scrollable>
+				<Button onClick={this.viewPromoFuncs.toggleViewPromo}>View Promo</Button>
+				<h2>ID: {this.state.user.id}</h2>
+				<h2>Promo codes: {this.state.user.id}</h2>
+			</Scrollable>
+		)
+	}
+	profileEdit = () => {
+		return (
+			<Scrollable>
+				<InputBox
+					label="first name"
+					type="text"
+					value={this.state.newProfile.firstName}
+					onChange={this.profileEditFuncs.onFirstNameChange}
+				/>
+				<InputBox
+					label="last name"
+					type="text"
+					value={this.state.newProfile.lastName}
+					onChange={this.profileEditFuncs.onLastNameChange}
+				/>
+				<InputBox
+					label="email"
+					type="text"
+					value={this.state.newProfile.email}
+					onChange={this.profileEditFuncs.onEmailChange}
+				/>
+
+				<Button>tel. numbers</Button>
+				<RadioContainer label="gender">
+					<RadioButton
+						label="male"
+						name="gender"
+						onChange={this.profileEditFuncs.onSelectMale}
+					></RadioButton>
+					<RadioButton
+						label="female"
+						name="gender"
+						onChange={this.profileEditFuncs.onSelectFemale}
+					></RadioButton>
+				</RadioContainer>
+
+				<InputBox
+					label="Address"
+					type="text"
+					value={this.state.newProfile.address}
+					onChange={this.profileEditFuncs.onAddressChange}
+				/>
+				<InputBox
+					label="password"
+					type="password"
+					onChange={this.profileEditFuncs.onPasswordChange}
+				/>
+
+				<Button onClick={this.profileEditFuncs.changeProfile}>save</Button>
+				<Button onClick={this.profileEditFuncs.toggleProfileEdit}>
+					cancel
+				</Button>
+			</Scrollable>
+		);
+	};
+
+
+
+	creditAdd = () => {
+		return (
+			<Scrollable>
+				<InputBox 
+					label="Card Number"
+					type="text"
+					value={this.state.newCard.number}
+					onChange={this.creditAddFuncs.onCardNumberChange}
+				/>
+					<InputBox 
+					label="Holder's Name"
+					type="text"
+					value={this.state.newCard.cardHolderName}
+					onChange={this.creditAddFuncs.onCardNameChange}
+				/>
+					<InputBox 
+					label="Expiry Date"
+					type="text"
+					value={this.state.newCard.expiryDate}
+					onChange={this.creditAddFuncs.onExpiryDateChange}
+				/>
+					<InputBox 
+					label="CVV"
+					type="text"
+					value={this.state.newCard.cvv}
+					onChange={this.creditAddFuncs.onCvvChange}
+				/>
+
+				<Button onClick={this.creditAddFuncs.addCreditCard}>save</Button>
+				<Button onClick={this.creditAddFuncs.toggleCreditAdd}>cancel</Button>
+			</Scrollable>
+		);
+	};
 
 	instructorAddCourse = () => {
 		return (
@@ -622,7 +979,7 @@ class Dashboard extends React.Component {
 					</>
 				) : (
 				<>					
-					// <h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2>
+					{/* // <h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2> */}
 					<Card header="add feedback">
 						<InputBox
 						 multiline={1} 
@@ -737,6 +1094,12 @@ class Dashboard extends React.Component {
 		);
 	};
 
+	// promoView = () => {
+	// 	return (
+	// 		<Win toggle= {() => this.setState({ popUpVisible: 1 })}><h1>Hello World!</h1></Win>
+	// 	);
+	// };
+
 	instructorDashboard = () => {
 		return (
 			<div style={DashboardStyles.bg}>
@@ -785,7 +1148,7 @@ class Dashboard extends React.Component {
 							dismiss
 						</Button>
 					</Win>
-					<Card header="my courses">
+					<Card header="my course">
 						<Scrollable>{this.viewCourses()}</Scrollable>
 					</Card>
 
@@ -796,18 +1159,22 @@ class Dashboard extends React.Component {
 					</Card>
 
 
-
 					<Card header="assignments">
 						<h1>hello world</h1>
 						ay 7aga
 					</Card>
 
+
+					<Card header="Payments & Credit Cards"> 
+						{this.state.creditAddFlag ? this.creditAdd() : this.creditView()}
+					</Card>
 					<Card header="available courses to buy">
 						<CoursesToBuy fetchStudentCourses={this.fetchStudentCourses} user={this.state.user} getEnrolled={()=>(this.state.courses)} />
 					</Card>
 
 
 
+					<Card header="Promocodes"> {this.state.promoCodeFlag ? this.promoView() : this.promoView()}</Card>
 				</CardsContainer>
 			</div>
 		);
