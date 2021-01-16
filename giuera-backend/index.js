@@ -155,7 +155,6 @@ app.post("/removemobile", async (req, res) => {
 			.input("mobile_number", sql.VarChar, reqBody.mobileNumber)
 			.query("DELETE FROM UserMobileNumber WHERE @mobile_number=mobilenumber AND @id=id")
 
-		console.log('\n\n\n\n\n\n\n\n\n ahej:',dbReq);
 
 		res.status(200);
 
@@ -165,17 +164,12 @@ app.post("/removemobile", async (req, res) => {
 
 	} catch (err) {
 				
-		if (1){
-			res.sendStatus(400);
-		}
 
-		else{
-			const result = {
-				msg: SERVER_ERROR,
-			};
-			res.status(500);
-			res.send(result);
-		}
+		const result = {
+			msg: SERVER_ERROR,
+		};
+		res.status(500);
+		res.send(result);
 	}
 });
 
@@ -715,10 +709,10 @@ app.post("/addcreditcard", async (req, res) => {
 		const dbReq = await database
 			.request()
 			.input("number", sql.VarChar, reqBody.number)
-			.input("sid", sql.Int, reqBody.studentid)
-			.input("cardHolderName", sql.VarChar, reqBody.card_holder_name)
+			.input("sid", sql.Int, reqBody.sid)
+			.input("cardHolderName", sql.VarChar, reqBody.cardHolderName)
 			.input("cvv", sql.VarChar, reqBody.cvv)
-			.input("expiryDate", sql.DateTime, reqBody.expiry_date)
+			.input("expiryDate", sql.DateTime, reqBody.expiryDate)
 			.execute("addCreditCard");
 
 		console.log(dbReq);
@@ -951,8 +945,8 @@ app.post("/rateinstructor", async (req, res) => {
 		const reqBody = req.body;
 		const dbReq = await database
 			.request()
-			.input("sid", sql.Int, reqBody.studentid)
-			.input("instId", sql.Int, reqBody.instructorid)
+			.input("sid", sql.Int, reqBody.sid)
+			.input("instId", sql.Int, reqBody.iid)
 			.input("rate", sql.Decimal, reqBody.rate)
 			.execute("rateInstructor");
 
@@ -977,17 +971,20 @@ app.post("/viewcertificate", async (req, res) => {
 		const reqBody = req.body;
 		const dbReq = await database
 			.request()
-			.input("sid", sql.Int, reqBody.studentid)
-			.input("cid", sql.Int, reqBody.courseid)
+			.input("sid", sql.Int, reqBody.sid)
+			.input("cid", sql.Int, reqBody.cid)
 			.execute("viewCertificate");
 
+		console.log(reqBody);
 		console.log(dbReq);
 
 		res.status(200);
 		res.send({
 			msg: "success",
-			...reqBody.recordset[0],
+			recordset : dbReq.recordset,
 		});
+
+
 	} catch (err) {
 		console.log(err);
 		const result = {
@@ -997,3 +994,6 @@ app.post("/viewcertificate", async (req, res) => {
 		res.send(result);
 	}
 });
+
+
+
