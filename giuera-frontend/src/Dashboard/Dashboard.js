@@ -13,6 +13,7 @@ import Profile from "./Profile";
 import RateInstructor from "./RateInstructor";
 import Certificate from "./Certificate";
 import CoursesToBuy from "./CoursesToBuy";
+import Promo from "./Promo";
 
 class Dashboard extends React.Component {
 	constructor(props) {
@@ -20,7 +21,6 @@ class Dashboard extends React.Component {
 		this.state = {
 			profileEditFlag: 0,
 			creditAddFlag: false,
-			promoCodeFlag: false,
 			coursesToBuy: [],
 			instructorAddingCourse: false,
 			instructorAddingAssignment: false,
@@ -61,42 +61,12 @@ class Dashboard extends React.Component {
 				expiryDate: "",
 				cvv: "",
 			},
-			newPromo: {
-				studentid: "",
-			},
+
+
 			user: null,
 			courses: [],
 		};
 
-		this.viewPromoFuncs = {
-			toggleViewPromo: () => {
-				this.setState({
-					promoCodeFlag: !this.state.promoCodeFlag,
-				});
-			},
-
-			onPromoCodechange: (event) => {
-				this.setState({
-					newPromo: {
-						studentid: this.props.user.id,
-					},
-				});
-			},
-			seePromo: async () => {
-				this.viewPromoFuns.toggleViewPromo();
-				const stuff = {
-					studentid: this.props.user.id,
-					...this.state.newPromo,
-				};
-				const request = {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(stuff),
-				};
-				let response = await fetch("http://localhost:3001/viewpromo", request);
-				this.fetchViewPromo();
-			},
-		};
 
 		this.instructorCourseDetailsFuncs = {
 			toggleAddAssignment: () => {
@@ -583,29 +553,11 @@ class Dashboard extends React.Component {
 		const data = await response.json();
 
 		this.setState({
-			studentCreditCard: data.credit,
+			studentCreditCard: data.recordset,
 		});
 	};
 
-	fetchViewPromo = async () => {
-		const stuff = {
-			studentid: this.props.user.id,
-		};
 
-		const request = {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(stuff),
-		};
-		console.log(JSON.stringify(stuff));
-		let response = await fetch("http://localhost:3001/viewpromo", request);
-
-		const data = await response.json();
-
-		this.setState({
-			studentid: data.data,
-		});
-	};
 
 	loadProfile = async () => {
 		if (this.props.user.type === 1) {
@@ -711,29 +663,23 @@ class Dashboard extends React.Component {
 	creditView = () => {
 		return (
 			<Scrollable>
+
 				<Button onClick={this.creditAddFuncs.toggleCreditAdd}>
 					Add Credit Card
 				</Button>
+
 				<h2>ID: {this.state.user.id}</h2>
 				<h2>CardNumber: {this.state.user.number}</h2>
 				<h2>CardHolder: {this.state.user.cardHolderName}</h2>
 				<h2>ExpiryDate: {this.state.user.expiryDate}</h2>
 				<h2>Cvv: {this.state.user.cvv}</h2>
+
 			</Scrollable>
 		);
 	};
 
-	promoView = () => {
-		return (
-			<Scrollable>
-				<Button onClick={this.viewPromoFuncs.toggleViewPromo}>
-					View Promo
-				</Button>
-				<h2>ID: {this.state.user.id}</h2>
-				<h2>Promo codes: {this.state.user.id}</h2>
-			</Scrollable>
-		);
-	};
+
+
 	profileEdit = () => {
 		return (
 			<Scrollable>
@@ -1130,11 +1076,7 @@ class Dashboard extends React.Component {
 		);
 	};
 
-	// promoView = () => {
-	// 	return (
-	// 		<Win toggle= {() => this.setState({ popUpVisible: 1 })}><h1>Hello World!</h1></Win>
-	// 	);
-	// };
+
 
 	instructorDashboard = () => {
 		return (
@@ -1162,6 +1104,7 @@ class Dashboard extends React.Component {
 					<Card header="profile">
 						<Profile loadProfile={this.loadProfile} user={this.state.user} />
 					</Card>
+
 				</CardsContainer>
 			</div>
 		);
@@ -1203,10 +1146,13 @@ class Dashboard extends React.Component {
 						/>
 					</Card>
 
-					<Card header="Promocodes">
-						{" "}
-						{this.state.promoCodeFlag ? this.promoView() : this.promoView()}
+
+					<Card header="promocodes">
+						<Promo getsid={()=>(this.state.user.id)}/>
 					</Card>
+
+
+
 				</CardsContainer>
 			</div>
 		);
