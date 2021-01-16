@@ -660,7 +660,7 @@ app.post("/viewcreditcard", async (req, res) => {
 			.request()
 			.input("sid", sql.Int, reqBody.sid)
 			.query(
-				"SELECT * FROM CreditCard a INNER JOIN StudentAddCreditCard b ON a.number = b.creditcardnumber WHERE sid=@sid"
+				"SELECT * FROM CreditCard JOIN StudentAddCreditCard b ON a.number = b.creditcardnumber WHERE sid=@sid"
 			);
 
 		console.log(dbReq);
@@ -668,7 +668,7 @@ app.post("/viewcreditcard", async (req, res) => {
 		res.status(200);
 		res.send({
 			msg: "success",
-			courses: dbReq.recordset,
+			recordset: dbReq.recordset,
 		});
 	} catch (err) {
 		console.log(err);
@@ -764,7 +764,7 @@ app.post("/viewpromo", async (req, res) => {
 		const reqBody = req.body;
 		const dbReq = await database
 			.request()
-			.input("sid", sql.Int, reqBody.studentid)
+			.input("sid", sql.Int, reqBody.sid)
 			.execute("viewPromocode");
 
 		console.log(dbReq);
@@ -772,7 +772,7 @@ app.post("/viewpromo", async (req, res) => {
 		res.status(200);
 		res.send({
 			msg: "success",
-			data: dbReq.recordset,
+			recordset: dbReq.recordset,
 		});
 	} catch (err) {
 		console.log(err);
