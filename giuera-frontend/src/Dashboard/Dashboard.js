@@ -9,8 +9,8 @@ import InputBox from "./../Form/InputBox";
 import RadioContainer from "./../Form/RadioContainer";
 import RadioButton from "./../Form/RadioButton";
 import Win from "./Win";
-import Profile from './Profile'
-import RateInstructor from './RateInstructor'
+import Profile from "./Profile";
+import RateInstructor from "./RateInstructor";
 import Certificate from "./Certificate";
 import CoursesToBuy from "./CoursesToBuy";
 
@@ -30,7 +30,8 @@ class Dashboard extends React.Component {
 			popupCourse: {},
 			studentAssignments: [],
 			studentFeedback: [],
-			courseToEnroll:{},
+			courseToEnroll: {},
+			myStudentAssignments: [],
 			newCourse: {
 				name: "",
 				description: "",
@@ -45,29 +46,29 @@ class Dashboard extends React.Component {
 				deadline: "",
 				content: "",
 			},
-			newFeedBack:{
-				comment:'',
-				courseid:0,
-				studentid:0,
+			newFeedBack: {
+				comment: "",
+				courseid: 0,
+				studentid: 0,
 			},
-			feedbackResult:'',
+			feedbackResult: "",
 			issueCert: {
 				id: 0,
 			},
 			newCard: {
-				number:"",
-				cardHolderName:"",
-				expiryDate:"",
-				cvv:"",
+				number: "",
+				cardHolderName: "",
+				expiryDate: "",
+				cvv: "",
 			},
 			newPromo: {
-				studentid:"",
+				studentid: "",
 			},
 			user: null,
 			courses: [],
 		};
 
-		this.viewPromoFuncs ={
+		this.viewPromoFuncs = {
 			toggleViewPromo: () => {
 				this.setState({
 					promoCodeFlag: !this.state.promoCodeFlag,
@@ -94,9 +95,8 @@ class Dashboard extends React.Component {
 				};
 				let response = await fetch("http://localhost:3001/viewpromo", request);
 				this.fetchViewPromo();
-			}
-		}
-		
+			},
+		};
 
 		this.instructorCourseDetailsFuncs = {
 			toggleAddAssignment: () => {
@@ -300,7 +300,6 @@ class Dashboard extends React.Component {
 			},
 		};
 
-		
 		this.profileEditFuncs = {
 			onFirstNameChange: (event) => {
 				console.log(this.state);
@@ -397,7 +396,7 @@ class Dashboard extends React.Component {
 			},
 		};
 
-		this.creditAddFuncs = { 
+		this.creditAddFuncs = {
 			onCardNumberChange: (event) => {
 				this.setState({
 					newCard: {
@@ -408,7 +407,7 @@ class Dashboard extends React.Component {
 			},
 
 			onCardNameChange: (event) => {
-				this.setState ({
+				this.setState({
 					newCard: {
 						...this.state.newCard,
 						cardHolderName: event.target.value,
@@ -417,7 +416,7 @@ class Dashboard extends React.Component {
 			},
 
 			onExpiryDateChange: (event) => {
-				this.setState ({
+				this.setState({
 					newCard: {
 						...this.state.newCard,
 						expiryDate: event.target.value,
@@ -426,7 +425,7 @@ class Dashboard extends React.Component {
 			},
 
 			onCvvChange: (event) => {
-				this.setState ({
+				this.setState({
 					newCard: {
 						...this.state.newCard,
 						cvv: event.target.value,
@@ -436,7 +435,7 @@ class Dashboard extends React.Component {
 
 			toggleCreditAdd: () => {
 				this.setState({
-					creditAddFlag: !this.state.creditAddFlag
+					creditAddFlag: !this.state.creditAddFlag,
 				});
 			},
 			addCreditCard: async () => {
@@ -450,13 +449,14 @@ class Dashboard extends React.Component {
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify(stuff),
 				};
-				let response = await fetch("http://localhost:3001/addcreditcard", request);
+				let response = await fetch(
+					"http://localhost:3001/addcreditcard",
+					request
+				);
 				this.fetchStudentCreditCard();
 			},
-		}
-
+		};
 	}
-
 
 	fetchStudentAssignments = async (cid) => {
 		const sub = {
@@ -478,6 +478,29 @@ class Dashboard extends React.Component {
 
 		this.setState({
 			studentAssignments: data.data,
+		});
+	};
+
+	fetchMyStudentAssignments = async (cid) => {
+		const sub = {
+			studentid: this.props.user.id,
+			courseid: cid,
+		};
+
+		const request = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(sub),
+		};
+
+		let response = await fetch(
+			"http://localhost:3001/viewassignments",
+			request
+		);
+		let data = await response.json();
+
+		this.setState({
+			myStudentAssignments: data.data,
 		});
 	};
 
@@ -548,47 +571,41 @@ class Dashboard extends React.Component {
 		const stuff = {
 			sid: this.props.user.id,
 		};
-		
+
 		const request = {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(stuff), 
+			body: JSON.stringify(stuff),
 		};
 		console.log(JSON.stringify(stuff));
-		let response = await fetch(
-			"http://localhost:3001/viewcreditcard",
-			request
-		);
+		let response = await fetch("http://localhost:3001/viewcreditcard", request);
 
 		const data = await response.json();
 
 		this.setState({
 			studentCreditCard: data.credit,
 		});
-	}
+	};
 
 	fetchViewPromo = async () => {
 		const stuff = {
 			studentid: this.props.user.id,
 		};
-		
+
 		const request = {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(stuff), 
+			body: JSON.stringify(stuff),
 		};
 		console.log(JSON.stringify(stuff));
-		let response = await fetch(
-			"http://localhost:3001/viewpromo",
-			request
-		);
+		let response = await fetch("http://localhost:3001/viewpromo", request);
 
 		const data = await response.json();
 
 		this.setState({
 			studentid: data.data,
 		});
-	}
+	};
 
 	loadProfile = async () => {
 		if (this.props.user.type === 1) {
@@ -612,7 +629,7 @@ class Dashboard extends React.Component {
 			this.setState({
 				flag: "",
 				user: {
-					type:this.props.user.type,
+					type: this.props.user.type,
 					id: this.props.user.id,
 					firstName: data.firstName,
 					lastName: data.lastName,
@@ -643,7 +660,7 @@ class Dashboard extends React.Component {
 
 			this.setState({
 				user: {
-					type:this.props.user.type,
+					type: this.props.user.type,
 					id: this.props.user.id,
 					gpa: data.gpa,
 					firstName: data.firstName,
@@ -679,6 +696,7 @@ class Dashboard extends React.Component {
 			>
 				<Button
 					onClick={() => {
+						this.fetchMyStudentAssignments(course.cid || course.id);
 						this.fetchStudentAssignments(course.cid || course.id);
 						this.fetchStudentFeedback(course.cid || course.id);
 						this.setState({ coursePopup: course, coursePopupVisible: true });
@@ -690,11 +708,12 @@ class Dashboard extends React.Component {
 		));
 	};
 
-
 	creditView = () => {
 		return (
 			<Scrollable>
-				<Button onClick={this.creditAddFuncs.toggleCreditAdd}>Add Credit Card</Button>
+				<Button onClick={this.creditAddFuncs.toggleCreditAdd}>
+					Add Credit Card
+				</Button>
 				<h2>ID: {this.state.user.id}</h2>
 				<h2>CardNumber: {this.state.user.number}</h2>
 				<h2>CardHolder: {this.state.user.cardHolderName}</h2>
@@ -707,12 +726,14 @@ class Dashboard extends React.Component {
 	promoView = () => {
 		return (
 			<Scrollable>
-				<Button onClick={this.viewPromoFuncs.toggleViewPromo}>View Promo</Button>
+				<Button onClick={this.viewPromoFuncs.toggleViewPromo}>
+					View Promo
+				</Button>
 				<h2>ID: {this.state.user.id}</h2>
 				<h2>Promo codes: {this.state.user.id}</h2>
 			</Scrollable>
-		)
-	}
+		);
+	};
 	profileEdit = () => {
 		return (
 			<Scrollable>
@@ -769,30 +790,28 @@ class Dashboard extends React.Component {
 		);
 	};
 
-
-
 	creditAdd = () => {
 		return (
 			<Scrollable>
-				<InputBox 
+				<InputBox
 					label="Card Number"
 					type="text"
 					value={this.state.newCard.number}
 					onChange={this.creditAddFuncs.onCardNumberChange}
 				/>
-					<InputBox 
+				<InputBox
 					label="Holder's Name"
 					type="text"
 					value={this.state.newCard.cardHolderName}
 					onChange={this.creditAddFuncs.onCardNameChange}
 				/>
-					<InputBox 
+				<InputBox
 					label="Expiry Date"
 					type="text"
 					value={this.state.newCard.expiryDate}
 					onChange={this.creditAddFuncs.onExpiryDateChange}
 				/>
-					<InputBox 
+				<InputBox
 					label="CVV"
 					type="text"
 					value={this.state.newCard.cvv}
@@ -918,10 +937,7 @@ class Dashboard extends React.Component {
 							return (
 								<h3>
 									<InfoBox header={`feedback no. ${val.number}`}>
-										<h1>
-											{val.comment}
-										</h1>
-
+										<h1>{val.comment}</h1>
 									</InfoBox>
 									{/* Feedback no: {val.number}/ comment: {val.comment}/ likes:
 									{val.numberOfLikes} */}
@@ -978,55 +994,75 @@ class Dashboard extends React.Component {
 						</div>
 					</>
 				) : (
-				<>					
-					{/* // <h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2> */}
-					<Card header="add feedback">
-						<InputBox
-						 multiline={1} 
-						 txtStyles={{height:'100%',fontSize:'30px'}}
-						 onChange={
-							 (e)=>(this.setState((state)=>{ 
-								 state.newFeedBack.comment=e.target.value
-								 state.newFeedBack.courseid=course.id || course.cid
-								 state.newFeedBack.studentid=this.state.user.id
-								}))
-							}
-						 >
-						 </InputBox>
-						<Button onClick={async ()=>{
+					<>
+						{/* // <h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2> */}
+						<Card header="my assignments">
+							<Scrollable>
+								{this.state.myStudentAssignments.map((val) => {
+									return (
+										<div
+											style={{ ...DashboardStyles.card, background: "gray" }}
+										>
+											<h1>{"Assignment " + val.number}</h1>
+											<h3>Assignment type</h3>
+											<p>{val.type}</p>
+											<h3>Assignment full grade</h3>
+											<p>{val.fullGrade}</p>
+											<h3>Assignment weight</h3>
+											<p>{val.weight}</p>
+											<h3>Assignment deadline</h3>
+											<p>{val.deadline}</p>
+										</div>
+									);
+								})}
+							</Scrollable>
+						</Card>
+						<Card header="add feedback">
+							<InputBox
+								multiline={1}
+								txtStyles={{ height: "100%", fontSize: "30px" }}
+								onChange={(e) =>
+									this.setState((state) => {
+										state.newFeedBack.comment = e.target.value;
+										state.newFeedBack.courseid = course.id || course.cid;
+										state.newFeedBack.studentid = this.state.user.id;
+									})
+								}
+							></InputBox>
+							<Button
+								onClick={async () => {
+									let data = this.state.newFeedBack;
 
-							let data = this.state.newFeedBack;
+									const request = {
+										method: "POST",
+										headers: { "Content-Type": "application/json" },
+										body: JSON.stringify(data),
+									};
 
-							const request = {
-								method: "POST",
-								headers: { "Content-Type": "application/json" },
-								body: JSON.stringify(data),
-							};
-			
-							let response = await fetch(
-								"http://localhost:3001/addfeedback",
-								request
-							);
+									let response = await fetch(
+										"http://localhost:3001/addfeedback",
+										request
+									);
 
-							data = await response.json()
+									data = await response.json();
 
-							
-
-							this.setState({feedbackResult:data.msg})
-
-
-						}}>{ (this.state.feedbackResult + "") ||'submit'}</Button>
-					</Card>
-					<Card header="course content">
-						{course.content}	
-					</Card>
-					<Card header="rate instructor">
-						<RateInstructor iid={course.instructorId} sid={this.state.user.id}/>
-					</Card>
-					<Card header="certificate">
-						<Certificate sid={this.state.user.id} cid={course.id}/>
-					</Card>
-				</>
+									this.setState({ feedbackResult: data.msg });
+								}}
+							>
+								{this.state.feedbackResult + "" || "submit"}
+							</Button>
+						</Card>
+						<Card header="course content">{course.content}</Card>
+						<Card header="rate instructor">
+							<RateInstructor
+								iid={course.instructorId}
+								sid={this.state.user.id}
+							/>
+						</Card>
+						<Card header="certificate">
+							<Certificate sid={this.state.user.id} cid={course.id} />
+						</Card>
+					</>
 				)}
 			</>
 		);
@@ -1124,7 +1160,7 @@ class Dashboard extends React.Component {
 					</Card>
 
 					<Card header="profile">
-							<Profile loadProfile={this.loadProfile} user={this.state.user}/>
+						<Profile loadProfile={this.loadProfile} user={this.state.user} />
 					</Card>
 				</CardsContainer>
 			</div>
@@ -1152,37 +1188,33 @@ class Dashboard extends React.Component {
 						<Scrollable>{this.viewCourses()}</Scrollable>
 					</Card>
 
-
-
 					<Card header="profile">
-							<Profile loadProfile={this.loadProfile} user={this.state.user}/>
+						<Profile loadProfile={this.loadProfile} user={this.state.user} />
 					</Card>
 
-
-					<Card header="assignments">
-						<h1>hello world</h1>
-						ay 7aga
-					</Card>
-
-
-					<Card header="Payments & Credit Cards"> 
+					<Card header="Payments & Credit Cards">
 						{this.state.creditAddFlag ? this.creditAdd() : this.creditView()}
 					</Card>
 					<Card header="available courses to buy">
-						<CoursesToBuy fetchStudentCourses={this.fetchStudentCourses} user={this.state.user} getEnrolled={()=>(this.state.courses)} />
+						<CoursesToBuy
+							fetchStudentCourses={this.fetchStudentCourses}
+							user={this.state.user}
+							getEnrolled={() => this.state.courses}
+						/>
 					</Card>
 
-
-
-					<Card header="Promocodes"> {this.state.promoCodeFlag ? this.promoView() : this.promoView()}</Card>
+					<Card header="Promocodes">
+						{" "}
+						{this.state.promoCodeFlag ? this.promoView() : this.promoView()}
+					</Card>
 				</CardsContainer>
 			</div>
 		);
 	};
 
 	render() {
-		if (this.state.user==null){
-			return <h1>loading</h1>
+		if (this.state.user == null) {
+			return <h1>loading</h1>;
 		}
 		if (this.props.user.type === 1) {
 			return this.instructorDashboard();
