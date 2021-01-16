@@ -78,9 +78,9 @@ class RegisterPage extends React.Component {
 	};
 
 	registerResultMsg = () => {
-		if (this.state.registerSucceeded === "0") {
+		if (this.state.registerSucceeded === 0) {
 			return <h1 style={{ color: "tomato" }}>ERROR : {this.state.msg}</h1>;
-		} else if (this.state.registerSucceeded === "1") {
+		} else if (this.state.registerSucceeded === 1) {
 			return <h1 style={{ color: "palegreen" }}>SUCCESS : {this.state.msg}</h1>;
 		}
 	};

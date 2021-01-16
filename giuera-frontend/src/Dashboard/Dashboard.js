@@ -9,11 +9,12 @@ import InputBox from "./../Form/InputBox";
 import RadioContainer from "./../Form/RadioContainer";
 import RadioButton from "./../Form/RadioButton";
 import Win from "./Win";
+import Profile from './Profile'
+
 class Dashboard extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			profileEditFlag: 0,
 			coursesToBuy: [],
 			instructorAddingCourse: false,
 			instructorAddingAssignment: false,
@@ -23,14 +24,7 @@ class Dashboard extends React.Component {
 			popupCourse: {},
 			studentAssignments: [],
 			studentFeedback: [],
-			newProfile: {
-				firstName: "",
-				lastName: "",
-				email: "",
-				password: "",
-				address: "",
-				gender: "",
-			},
+			courseToEnroll:{},
 			newCourse: {
 				name: "",
 				description: "",
@@ -54,7 +48,7 @@ class Dashboard extends React.Component {
 			issueCert: {
 				id: 0,
 			},
-			user: {},
+			user: null,
 			courses: [],
 		};
 
@@ -260,101 +254,6 @@ class Dashboard extends React.Component {
 			},
 		};
 
-		this.profileEditFuncs = {
-			onFirstNameChange: (event) => {
-				console.log(this.state);
-				this.setState({
-					newProfile: {
-						...this.state.newProfile,
-						firstName: event.target.value,
-					},
-				});
-			},
-
-			onLastNameChange: (event) => {
-				this.setState({
-					newProfile: {
-						...this.state.newProfile,
-						lastName: event.target.value,
-					},
-				});
-			},
-
-			onEmailChange: (event) => {
-				this.setState({
-					newProfile: {
-						...this.state.newProfile,
-						email: event.target.value,
-					},
-				});
-			},
-
-			onPasswordChange: (event) => {
-				this.setState({
-					newProfile: {
-						...this.state.newProfile,
-						password: event.target.value,
-					},
-				});
-			},
-
-			onAddressChange: (event) => {
-				this.setState({
-					newProfile: {
-						...this.state.newProfile,
-						address: event.target.value,
-					},
-				});
-			},
-
-			onSelectMale: (event) => {
-				this.setState({
-					newProfile: {
-						...this.state.newProfile,
-						gender: 1,
-					},
-				});
-			},
-
-			onSelectFemale: (event) => {
-				this.setState({
-					newProfile: {
-						...this.state.newProfile,
-						gender: 0,
-					},
-				});
-			},
-			changeProfile: async () => {
-				this.profileEditFuncs.toggleProfileEdit();
-				const sub = {
-					userid: this.props.user.id,
-					...this.state.newProfile,
-				};
-
-				console.log(sub);
-
-				const request = {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(sub),
-				};
-
-				let response = await fetch(
-					"http://localhost:3001/editprofile",
-					request
-				);
-				//let data = await response.json();
-				this.loadProfile();
-			},
-
-			toggleProfileEdit: () => {
-				console.log(this.state.profileEditFlag);
-
-				this.setState({
-					profileEditFlag: !this.state.profileEditFlag,
-				});
-			},
-		};
 	}
 	fetchCoursesToBuy = async () => {
 		let response = await fetch("http://localhost:3001/availablecourses");
@@ -528,9 +427,9 @@ class Dashboard extends React.Component {
 		});
 	};
 
-	componentDidMount = async () => {
-		await this.loadProfile();
-		await this.fetchCoursesToBuy();
+	componentDidMount = () => {
+		this.loadProfile();
+		this.fetchCoursesToBuy();
 	};
 
 	viewCourses = () => {
@@ -562,86 +461,14 @@ class Dashboard extends React.Component {
 				sub={"credit hours:" + course.creditHours}
 			>
 				<p>{course.courseDescription}</p>
-				<Button>enroll</Button>
+				<Button onClick={()=>{
+					
+
+				}}>enroll</Button>
 			</InfoBox>
 		));
 	};
 
-	profileView = () => {
-		return (
-			<Scrollable>
-				<Button onClick={this.profileEditFuncs.toggleProfileEdit}>edit</Button>
-				<h2>{this.state.user.firstName + " " + this.state.user.lastName}</h2>
-				<h2>{this.props.user.type === 2 ? "student" : "instructor"}</h2>
-				<h2> ID : {this.state.user.id} </h2>
-				<h2>
-					{" "}
-					{this.props.user.type === 2
-						? "GPA : " + this.state.user.gpa
-						: "rating : " + this.state.user.rating}
-				</h2>
-				<h2>Email: {this.state.user.email}</h2>
-				<h2>Gender: {!this.state.user.gender ? "Male" : "Female"}</h2>
-				<h2>Address: {this.state.user.address}</h2>
-			</Scrollable>
-		);
-	};
-
-	profileEdit = () => {
-		return (
-			<Scrollable>
-				<InputBox
-					label="first name"
-					type="text"
-					value={this.state.newProfile.firstName}
-					onChange={this.profileEditFuncs.onFirstNameChange}
-				/>
-				<InputBox
-					label="last name"
-					type="text"
-					value={this.state.newProfile.lastName}
-					onChange={this.profileEditFuncs.onLastNameChange}
-				/>
-				<InputBox
-					label="email"
-					type="text"
-					value={this.state.newProfile.email}
-					onChange={this.profileEditFuncs.onEmailChange}
-				/>
-
-				<Button>tel. numbers</Button>
-				<RadioContainer label="gender">
-					<RadioButton
-						label="male"
-						name="gender"
-						onChange={this.profileEditFuncs.onSelectMale}
-					></RadioButton>
-					<RadioButton
-						label="female"
-						name="gender"
-						onChange={this.profileEditFuncs.onSelectFemale}
-					></RadioButton>
-				</RadioContainer>
-
-				<InputBox
-					label="Address"
-					type="text"
-					value={this.state.newProfile.address}
-					onChange={this.profileEditFuncs.onAddressChange}
-				/>
-				<InputBox
-					label="password"
-					type="password"
-					onChange={this.profileEditFuncs.onPasswordChange}
-				/>
-
-				<Button onClick={this.profileEditFuncs.changeProfile}>save</Button>
-				<Button onClick={this.profileEditFuncs.toggleProfileEdit}>
-					cancel
-				</Button>
-			</Scrollable>
-		);
-	};
 
 	instructorAddCourse = () => {
 		return (
@@ -816,7 +643,7 @@ class Dashboard extends React.Component {
 						</div>
 					</>
 				) : (
-					
+				<>					
 					// <h2>IMPLEMENT HERE COURSE DETAILS STUFF FOR STUDNET</h2>
 					<Card header="add feedback">
 						<InputBox
@@ -855,7 +682,10 @@ class Dashboard extends React.Component {
 
 						}}>{ (this.state.feedbackResult + "") ||'submit'}</Button>
 					</Card>
-
+					<Card header="course content">
+						{course.content}	
+					</Card>
+				</>
 				)}
 			</>
 		);
@@ -931,13 +761,13 @@ class Dashboard extends React.Component {
 					<Win toggle={this.state.coursePopupVisible}>
 						{this.coursePopup()}
 						<Button onClick={() => this.setState({ coursePopupVisible: 0 })}>
-							dimiss
+							dismiss
 						</Button>
 					</Win>
 					<Win toggle={this.state.popUpVisible}>
 						{this.state.popUpMsg}
 						<Button onClick={() => this.setState({ popUpVisible: 0 })}>
-							dimiss
+							dismiss
 						</Button>
 					</Win>
 					<Card header="my courses">
@@ -947,9 +777,7 @@ class Dashboard extends React.Component {
 					</Card>
 
 					<Card header="profile">
-						{this.state.profileEditFlag
-							? this.profileEdit()
-							: this.profileView()}
+							<Profile loadProfile={this.loadProfile} getUser={()=>(this.state.user)}/>
 					</Card>
 				</CardsContainer>
 			</div>
@@ -964,7 +792,7 @@ class Dashboard extends React.Component {
 					<Win toggle={this.state.coursePopupVisible}>
 						{this.coursePopup()}
 						<Button onClick={() => this.setState({ coursePopupVisible: 0 })}>
-							dimiss
+							dismiss
 						</Button>
 					</Win>
 					<Win toggle={this.state.popUpVisible}>
@@ -978,9 +806,7 @@ class Dashboard extends React.Component {
 					</Card>
 
 					<Card header="profile">
-						{this.state.profileEditFlag
-							? this.profileEdit()
-							: this.profileView()}
+							<Profile loadProfile={this.loadProfile} user={this.state.user}/>
 					</Card>
 
 					<Card header="assignments">
@@ -991,12 +817,18 @@ class Dashboard extends React.Component {
 					<Card header="available courses to buy">
 						<Scrollable>{this.viewCoursesToBuy()}</Scrollable>
 					</Card>
+					<Card header="my certificates">
+
+					</Card>
 				</CardsContainer>
 			</div>
 		);
 	};
 
 	render() {
+		if (this.state.user==null){
+			return <h1>loading</h1>
+		}
 		if (this.props.user.type === 1) {
 			return this.instructorDashboard();
 		}
