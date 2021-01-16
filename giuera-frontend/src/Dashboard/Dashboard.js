@@ -14,6 +14,7 @@ class Dashboard extends React.Component {
 		super(props);
 		this.state = {
 			profileEditFlag: 0,
+			creditAddFlag: false,
 			coursesToBuy: [],
 			instructorAddingCourse: false,
 			instructorAddingAssignment: false,
@@ -53,6 +54,12 @@ class Dashboard extends React.Component {
 			feedbackResult:'',
 			issueCert: {
 				id: 0,
+			},
+			newCard: {
+				number:"",
+				cardHolderName:"",
+				expiryDate:"",
+				cvv:"",
 			},
 			user: {},
 			courses: [],
@@ -260,6 +267,7 @@ class Dashboard extends React.Component {
 			},
 		};
 
+		
 		this.profileEditFuncs = {
 			onFirstNameChange: (event) => {
 				console.log(this.state);
@@ -355,6 +363,65 @@ class Dashboard extends React.Component {
 				});
 			},
 		};
+
+		this.creditAddFuncs = { 
+			onCardNumberChange: (event) => {
+				this.setState({
+					newCard: {
+						...this.state.newCard,
+						number: event.target.value,
+					},
+				});
+			},
+
+			onCardNameChange: (event) => {
+				this.setState ({
+					newCard: {
+						...this.state.newCard,
+						cardHolderName: event.target.value,
+					},
+				});
+			},
+
+			onExpiryDateChange: (event) => {
+				this.setState ({
+					newCard: {
+						...this.state.newCard,
+						expiryDate: event.target.value,
+					},
+				});
+			},
+
+			onCvvChange: (event) => {
+				this.setState ({
+					newCard: {
+						...this.state.newCard,
+						cvv: event.target.value,
+					},
+				});
+			},
+
+			toggleCreditAdd: () => {
+				this.setState({
+					creditAddFlag: !this.state.creditAddFlag
+				});
+			},
+			addCreditCard: async () => {
+				this.creditAddFuncs.toggleCreditAdd();
+				const stuff = {
+					sid: this.props.user.id,
+					...this.state.newCard,
+				};
+				const request = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(stuff),
+				};
+				let response = await fetch("http://localhost:3001/addcreditcard", request);
+				this.fetchStudentCreditCard();
+			},
+		}
+
 	}
 	fetchCoursesToBuy = async () => {
 		let response = await fetch("http://localhost:3001/availablecourses");
@@ -453,6 +520,29 @@ class Dashboard extends React.Component {
 			courses: resData.data,
 		});
 	};
+
+	fetchStudentCreditCard = async () => {
+		const stuff = {
+			sid: this.props.user.id,
+		};
+		
+		const request = {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(stuff), 
+		};
+		console.log(JSON.stringify(stuff));
+		let response = await fetch(
+			"http://localhost:3001/viewcreditcard",
+			request
+		);
+
+		const data = await response.json();
+
+		this.setState({
+			studentCreditCard: data.credit,
+		});
+	}
 
 	loadProfile = async () => {
 		if (this.props.user.type === 1) {
@@ -587,6 +677,19 @@ class Dashboard extends React.Component {
 		);
 	};
 
+	creditView = () => {
+		return (
+			<Scrollable>
+				<Button onClick={this.creditAddFuncs.toggleCreditAdd}>Add Credit Card</Button>
+				<h2>ID: {this.state.user.id}</h2>
+				<h2>CardNumber: {this.state.user.number}</h2>
+				<h2>CardHolder: {this.state.user.cardHolderName}</h2>
+				<h2>ExpiryDate: {this.state.user.expiryDate}</h2>
+				<h2>Cvv: {this.state.user.cvv}</h2>
+			</Scrollable>
+		);
+	};
+
 	profileEdit = () => {
 		return (
 			<Scrollable>
@@ -639,6 +742,42 @@ class Dashboard extends React.Component {
 				<Button onClick={this.profileEditFuncs.toggleProfileEdit}>
 					cancel
 				</Button>
+			</Scrollable>
+		);
+	};
+
+
+
+	creditAdd = () => {
+		return (
+			<Scrollable>
+				<InputBox 
+					label="Card Number"
+					type="text"
+					value={this.state.newCard.number}
+					onChange={this.creditAddFuncs.onCardNumberChange}
+				/>
+					<InputBox 
+					label="Holder's Name"
+					type="text"
+					value={this.state.newCard.cardHolderName}
+					onChange={this.creditAddFuncs.onCardNameChange}
+				/>
+					<InputBox 
+					label="Expiry Date"
+					type="text"
+					value={this.state.newCard.expiryDate}
+					onChange={this.creditAddFuncs.onExpiryDateChange}
+				/>
+					<InputBox 
+					label="CVV"
+					type="text"
+					value={this.state.newCard.cvv}
+					onChange={this.creditAddFuncs.onCvvChange}
+				/>
+
+				<Button onClick={this.creditAddFuncs.addCreditCard}>save</Button>
+				<Button onClick={this.creditAddFuncs.toggleCreditAdd}>cancel</Button>
 			</Scrollable>
 		);
 	};
@@ -973,7 +1112,7 @@ class Dashboard extends React.Component {
 							dismiss
 						</Button>
 					</Win>
-					<Card header="my courses">
+					<Card header="my course">
 						<Scrollable>{this.viewCourses()}</Scrollable>
 					</Card>
 
@@ -983,13 +1122,17 @@ class Dashboard extends React.Component {
 							: this.profileView()}
 					</Card>
 
-					<Card header="assignments">
+					<Card header="Assignments">
 						<h1>hello world</h1>
 						ay 7aga
 					</Card>
 
-					<Card header="available courses to buy">
+					<Card header="Available courses to buy">
 						<Scrollable>{this.viewCoursesToBuy()}</Scrollable>
+					</Card>
+
+					<Card header="Payments & Credit Cards"> 
+						{this.state.creditAddFlag ? this.creditAdd() : this.creditView()}
 					</Card>
 				</CardsContainer>
 			</div>

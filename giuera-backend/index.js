@@ -1,6 +1,7 @@
-import cors from "cors";
-import express from "express";
-import sql from "mssql";
+let cors = require("cors");
+let express = require("express");
+let sql = require("mssql");
+
 
 const SERVER_ERROR = "Server encountered and error";
 
@@ -577,6 +578,33 @@ app.post("/viewenrolled", async (req, res) => {
 			.input("sid", sql.Int, reqBody.studentid)
 			.query(
 				"SELECT * FROM Course a  LEFT JOIN StudentTakeCourse b on a.id=b.cid WHERE @sid=sid"
+			);
+
+		console.log(dbReq);
+
+		res.status(200);
+		res.send({
+			msg: "success",
+			courses: dbReq.recordset,
+		});
+	} catch (err) {
+		console.log(err);
+		const result = {
+			msg: SERVER_ERROR,
+		};
+		res.status(500);
+		res.send(result);
+	}
+});
+
+app.post("/viewcreditcard", async (req, res) => {
+	try {
+		const reqBody = req.body;
+		const dbReq = await database
+			.request()
+			// .input("sid", sql.Int, reqBody.studentid)
+			.query(
+				"SELECT * FROM StudentAddCreditCard"
 			);
 
 		console.log(dbReq);
