@@ -375,6 +375,7 @@ class Dashboard extends React.Component {
 			this.setState({
 				flag: "",
 				user: {
+					type:this.props.user.type,
 					id: this.props.user.id,
 					firstName: data.firstName,
 					lastName: data.lastName,
@@ -405,6 +406,7 @@ class Dashboard extends React.Component {
 
 			this.setState({
 				user: {
+					type:this.props.user.type,
 					id: this.props.user.id,
 					gpa: data.gpa,
 					firstName: data.firstName,

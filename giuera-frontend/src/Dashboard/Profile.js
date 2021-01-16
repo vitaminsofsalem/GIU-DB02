@@ -125,7 +125,7 @@ class Profile extends React.Component{
 
 	}	
 	componentDidMount = () =>{
-		this.setState({user:this.props.getUser()})
+		this.setState({user:this.props.user})
 	}
 
 	profileView = () => {
