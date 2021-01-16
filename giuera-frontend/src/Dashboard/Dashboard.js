@@ -11,6 +11,7 @@ import RadioButton from "./../Form/RadioButton";
 import Win from "./Win";
 import Profile from './Profile'
 import Certificates from "./Certificates";
+import CoursesToBuy from "./CoursesToBuy";
 
 class Dashboard extends React.Component {
 	constructor(props) {
@@ -256,17 +257,7 @@ class Dashboard extends React.Component {
 		};
 
 	}
-	fetchCoursesToBuy = async () => {
-		let response = await fetch("http://localhost:3001/availablecourses");
-		let data = await response.json();
-		let existingCourseIDs = this.state.courses.map((course) => course.id);
 
-		this.setState({
-			coursesToBuy: data.recordset.filter(
-				(course) => !existingCourseIDs.includes(course.id)
-			),
-		});
-	};
 
 	fetchStudentAssignments = async (cid) => {
 		const sub = {
@@ -432,7 +423,6 @@ class Dashboard extends React.Component {
 
 	componentDidMount = () => {
 		this.loadProfile();
-		this.fetchCoursesToBuy();
 	};
 
 	viewCourses = () => {
@@ -455,22 +445,6 @@ class Dashboard extends React.Component {
 		));
 	};
 
-	viewCoursesToBuy = () => {
-		console.log(this.state.coursesToBuy);
-		return this.state.coursesToBuy.map((course) => (
-			<InfoBox
-				key={course.id}
-				header={course.name}
-				sub={"credit hours:" + course.creditHours}
-			>
-				<p>{course.courseDescription}</p>
-				<Button onClick={()=>{
-					
-
-				}}>enroll</Button>
-			</InfoBox>
-		));
-	};
 
 
 	instructorAddCourse = () => {
@@ -822,7 +796,7 @@ class Dashboard extends React.Component {
 					</Card>
 
 					<Card header="available courses to buy">
-						<Scrollable>{this.viewCoursesToBuy()}</Scrollable>
+						<CoursesToBuy fetchStudentCourses={this.fetchStudentCourses} user={this.state.user} getEnrolled={()=>(this.state.courses)} />
 					</Card>
 
 
